@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {RawTriggerType, RawTrigger} from "./Dsl.sol";
+import {RawTriggerType, RawTrigger} from "./Triggers.sol";
 import {RawCallContext, RawBlockContext, RawLogContext} from "./Context.sol";
 
 abstract contract Raw$OnCall {

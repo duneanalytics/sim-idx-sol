@@ -8,7 +8,7 @@ import {
     GlobalTarget,
     TriggerType,
     RawTriggerType
-} from "lib/sim-idx-sol/src/Dsl.sol";
+} from "lib/sim-idx-sol/src/Triggers.sol";
 import {Triggers} from "src/Main.sol";
 
 // TODO: This script should be hidden from the user

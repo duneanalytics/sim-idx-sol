@@ -3,6 +3,36 @@ pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
 
+enum Chains {
+    Ethereum,           // 1
+    EthereumSepolia,    // 11155111
+    Base,               // 8453
+    BaseSepolia,        // 84532
+    WorldChain,         // 480
+    Mode,               // 34443
+    Ink,                // 57073
+    Unichain,           // 130
+    Zora,               // 7777777
+    BOB,                // 60808
+    Soneium,            // 1868
+    Shape               // 360
+}
+
+function chainToChainId(Chains chain) pure returns (uint256) {
+    if (chain == Chains.Ethereum) return 1;
+    if (chain == Chains.EthereumSepolia) return 11155111;
+    if (chain == Chains.Base) return 8453;
+    if (chain == Chains.BaseSepolia) return 84532;
+    if (chain == Chains.WorldChain) return 480;
+    if (chain == Chains.Mode) return 34443;
+    if (chain == Chains.Ink) return 57073;
+    if (chain == Chains.Unichain) return 130;
+    if (chain == Chains.Zora) return 7777777;
+    if (chain == Chains.BOB) return 60808;
+    if (chain == Chains.Soneium) return 1868;
+    if (chain == Chains.Shape) return 360;
+    revert("Unsupported chain");
+}
 
 enum TriggerType {
     FUNCTION,
@@ -41,6 +71,13 @@ struct ChainIdContract {
     address contractAddress;
 }
 
+function chainContract(Chains chain, address contractAddress) pure returns (ChainIdContract memory) {
+    return ChainIdContract({
+        chainId: chainToChainId(chain),
+        contractAddress: contractAddress
+    });
+}
+
 struct Abi {
     string name;
 }
@@ -57,8 +94,21 @@ struct ChainIdAbi {
     Abi abi;
 }
 
+function chainAbi(Chains chain, Abi memory abiData) pure returns (ChainIdAbi memory) {
+    return ChainIdAbi({
+        chainId: chainToChainId(chain),
+        abi: abiData
+    });
+}
+
 struct ChainIdGlobal {
     uint256 chainId;
+}
+
+function chainGlobal(Chains chain) pure returns (ChainIdGlobal memory) {
+    return ChainIdGlobal({
+        chainId: chainToChainId(chain)
+    });
 }
 
 struct CustomTriggerContractTarget {

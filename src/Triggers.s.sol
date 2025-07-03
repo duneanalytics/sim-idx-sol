@@ -118,6 +118,8 @@ library CustomTriggerTypeLib {
             return "function";
         } else if (triggerType == TriggerType.EVENT) {
             return "event";
+        } else if (triggerType == TriggerType.PRE_FUNCTION) {
+            return "pre_function";
         } else {
             revert("Invalid trigger type");
         }

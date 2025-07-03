@@ -36,7 +36,8 @@ function chainToChainId(Chains chain) pure returns (uint256) {
 
 enum TriggerType {
     FUNCTION,
-    EVENT
+    EVENT,
+    PRE_FUNCTION
 }
 
 enum RawTriggerType {

@@ -45,10 +45,15 @@ struct TransactionContext {
 struct FunctionContext {
   TransactionContext txn;
 }
+
 struct EventContext {
     TransactionContext txn;
 }
-// TODO: Should maybe instead be called "CallContext", but that name conflicts with services side.
+
+struct PreFunctionContext {
+  TransactionContext txn;
+}
+
 struct RawCallContext {
     TransactionContext txn;
     // Calldata

@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Script, console} from "forge-std/Script.sol";
-
 enum Chains {
     Ethereum,           // 1
     EthereumSepolia,    // 11155111

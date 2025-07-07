@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.13;
 
-import {FunctionContext, EventContext, CallFrame, TransactionContext, ContractVerificationSource, CallType} from "sim-idx-sol/Context.sol";
+import {FunctionContext, EventContext, CallFrame, TransactionContext, ContractVerificationSource, CallType} from "../Context.sol";
 
 library MockContexts {
     function mockFunctionContext() internal pure returns (FunctionContext memory) {

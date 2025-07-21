@@ -23,6 +23,8 @@ struct CallFrame {
     address callee;
      // Address of the EOA / contract that invoked the current one
     address caller;      
+    // The calldata of the current call
+    bytes data;
     // The depth of the current call
     uint256 callDepth;
     // Value transferred (in wei)

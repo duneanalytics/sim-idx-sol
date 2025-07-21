@@ -40,6 +40,7 @@ enum TriggerType {
 
 enum RawTriggerType {
     CALL,
+    PRE_CALL,
     BLOCK,
     LOG
 }

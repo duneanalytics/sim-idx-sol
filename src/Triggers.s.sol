@@ -128,6 +128,8 @@ library CustomTriggerTypeLib {
     function toString(RawTriggerType triggerType) internal pure returns (string memory) {
         if (triggerType == RawTriggerType.CALL) {
             return "call";
+        } else if (triggerType == RawTriggerType.PRE_CALL) {
+            return "pre_call";
         } else if (triggerType == RawTriggerType.BLOCK) {
             return "block";
         } else if (triggerType == RawTriggerType.LOG) {

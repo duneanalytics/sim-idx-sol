@@ -63,6 +63,12 @@ struct RawCallContext {
     bytes returnData;
 }
 
+struct RawPreCallContext {
+    TransactionContext txn;
+    // Calldata
+    bytes data;
+}
+
 struct RawLogContext {
     TransactionContext txn;
     bytes32[] topics;

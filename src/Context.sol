@@ -24,7 +24,7 @@ struct CallFrame {
      // Address of the EOA / contract that invoked the current one
     address caller;      
     // The calldata of the current call
-    bytes data;
+    bytes callData;
     // The depth of the current call
     uint256 callDepth;
     // Value transferred (in wei)
@@ -58,14 +58,20 @@ struct PreFunctionContext {
 
 struct RawCallContext {
     TransactionContext txn;
-    // Calldata
-    bytes data;
+    bytes callData;
     bytes returnData;
+}
+
+struct RawPreCallContext {
+    TransactionContext txn;
+    bytes callData;
 }
 
 struct RawLogContext {
     TransactionContext txn;
+    // The topics of the log
     bytes32[] topics;
+    // The data of the log
     bytes data;
 }
 

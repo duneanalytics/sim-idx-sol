@@ -28,6 +28,7 @@ library MockContexts {
         return CallFrame({
             caller: address(0x2121212121212121212121212121212121212121),
             callee: address(0x4242424242424242424242424242424242424242),
+            callData: bytes(""),
             value: 0,
             callType: CallType.UNKNOWN,
             callDepth: 0,

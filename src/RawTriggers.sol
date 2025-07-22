@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {RawTriggerType, RawTrigger} from "./Triggers.sol";
-import {RawCallContext, RawBlockContext, RawLogContext} from "./Context.sol";
+import {RawCallContext, RawPreCallContext, RawBlockContext, RawLogContext} from "./Context.sol";
 
 abstract contract Raw$OnCall {
     function onCall(RawCallContext memory ctx) virtual external;
@@ -11,6 +11,18 @@ abstract contract Raw$OnCall {
         return RawTrigger({
             triggerType: RawTriggerType.CALL,
             handlerSelector: this.onCall.selector,
+            listenerCodehash: address(this).codehash
+        });
+    }
+}
+
+abstract contract Raw$OnPreCall {
+    function onPreCall(RawPreCallContext memory ctx) virtual external;
+
+    function triggerOnPreCall() external view returns (RawTrigger memory) {
+        return RawTrigger({
+            triggerType: RawTriggerType.PRE_CALL,
+            handlerSelector: this.onPreCall.selector,
             listenerCodehash: address(this).codehash
         });
     }

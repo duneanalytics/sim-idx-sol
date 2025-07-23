@@ -20,7 +20,8 @@ library MockContexts {
         return TransactionContext({
             call: mockCallFrame(),
             hash: bytes32(0),
-            chainId: 1
+            chainId: 1,
+            isSuccessful: true
         });
     }
 
@@ -32,7 +33,9 @@ library MockContexts {
             value: 0,
             callType: CallType.UNKNOWN,
             callDepth: 0,
-            verificationSource: ContractVerificationSource.Unspecified
+            verificationSource: ContractVerificationSource.Unspecified,
+            delegatee: address(0),
+            delegator: address(0)
         });
     }
 }

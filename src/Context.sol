@@ -23,6 +23,10 @@ struct CallFrame {
     address callee;
      // Address of the EOA / contract that invoked the current one
     address caller;      
+    // Address of the EOA / contract that delegated the current call (proxy)
+    address delegator;
+    // Address of the contract that was delegated to (implementation)
+    address delegatee;
     // The calldata of the current call
     bytes callData;
     // The depth of the current call
@@ -42,6 +46,8 @@ struct TransactionContext {
     bytes32 hash;
     // Network chain identifier
     uint256 chainId; 
+    // Whether the external transaction is successful or reverted
+    bool isSuccessful;
 }
 
 struct FunctionContext {

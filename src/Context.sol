@@ -36,7 +36,7 @@ struct CallFrame {
     // The type of call
     function () external view returns (CallType) callType;
     // The verification source of the current contract
-    function () external view returns (ContractVerificationSource) verificationSource;
+    ContractVerificationSource verificationSource;
 }
 
 struct TransactionContext {

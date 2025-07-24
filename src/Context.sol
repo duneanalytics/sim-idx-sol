@@ -42,12 +42,12 @@ struct CallFrame {
 struct TransactionContext {
     // The execution context of the current call
     CallFrame  call;
+    // Whether the external transaction is successful or reverted
+    function () external returns (bool) isSuccessful;
     // Top level transaction hash
-    bytes32 hash;
+    function () external returns (bytes32) hash;
     // Network chain identifier
     uint256 chainId; 
-    // Whether the external transaction is successful or reverted
-    bool isSuccessful;
 }
 
 struct FunctionContext {
@@ -64,21 +64,21 @@ struct PreFunctionContext {
 
 struct RawCallContext {
     TransactionContext txn;
-    bytes callData;
-    bytes returnData;
+    function () external returns (bytes memory) callData;
+    function () external returns (bytes memory) returnData;
 }
 
 struct RawPreCallContext {
     TransactionContext txn;
-    bytes callData;
+    function () external returns (bytes memory) callData;
 }
 
 struct RawLogContext {
     TransactionContext txn;
     // The topics of the log
-    bytes32[] topics;
+    function () external returns (bytes32[] memory) topics;
     // The data of the log
-    bytes data;
+    function () external returns (bytes memory) data;
 }
 
 struct RawBlockContext {

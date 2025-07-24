@@ -13,6 +13,8 @@ contract MockContexts {
     ContractVerificationSource public verificationSource;
     address public delegatee;
     address public delegator;
+    bytes32 public hash;
+    bool public isSuccessful;
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
         return FunctionContext({
@@ -29,9 +31,9 @@ contract MockContexts {
     function mockBaseContext() external view returns (TransactionContext memory) {
         return TransactionContext({
             call: this.mockCallFrame(),
-            hash: bytes32(0),
-            chainId: 1,
-            isSuccessful: true
+            hash: this.hash,
+            isSuccessful: this.isSuccessful,
+            chainId: 1
         });
     }
 

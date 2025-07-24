@@ -43,9 +43,9 @@ contract MockContexts {
             value: this.value,
             callType: this.callType,
             callDepth: this.callDepth,
-            verificationSource: this.verificationSource,
             delegatee: this.delegatee,
-            delegator: this.delegator
+            delegator: this.delegator,
+            verificationSource: verificationSource
         });
     }
 

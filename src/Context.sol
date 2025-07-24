@@ -20,21 +20,21 @@ enum CallType {
 
 struct CallFrame {
      // Address of the currently executing contract 
-    function () external view returns (address) callee;    
+    function () external returns (address) callee;    
      // Address of the EOA / contract that invoked the current one
-    function () external view returns (address) caller;      
+    function () external returns (address) caller;      
     // Address of the EOA / contract that delegated the current call (proxy)
-    function () external view returns (address) delegator;
+    function () external returns (address) delegator;
     // Address of the contract that was delegated to (implementation)
-    function () external view returns (address) delegatee;
+    function () external returns (address) delegatee;
     // The calldata of the current call
-    function () external view returns (bytes memory)  callData;
+    function () external returns (bytes memory)  callData;
     // The depth of the current call
-    function () external view returns (uint256)  callDepth;
+    function () external returns (uint256)  callDepth;
     // Value transferred (in wei)
-    function () external view returns (uint256)  value;
+    function () external returns (uint256)  value;
     // The type of call
-    function () external view returns (CallType) callType;
+    function () external returns (CallType) callType;
     // The verification source of the current contract
     ContractVerificationSource verificationSource;
 }

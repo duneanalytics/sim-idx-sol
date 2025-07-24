@@ -41,7 +41,7 @@ struct CallFrame {
 
 struct TransactionContext {
     // The execution context of the current call
-    function () external view returns (CallFrame memory) call;
+    CallFrame  call;
     // Top level transaction hash
     bytes32 hash;
     // Network chain identifier

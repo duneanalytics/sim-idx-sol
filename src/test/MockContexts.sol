@@ -3,39 +3,94 @@ pragma solidity ^0.8.13;
 
 import {FunctionContext, EventContext, CallFrame, TransactionContext, ContractVerificationSource, CallType} from "../Context.sol";
 
-library MockContexts {
-    function mockFunctionContext() internal pure returns (FunctionContext memory) {
+contract MockContexts {
+    address public caller;
+    address public callee;
+    bytes public callData;
+    uint256 public value;
+    CallType public callType;
+    uint256 public callDepth;
+    ContractVerificationSource public verificationSource;
+    address public delegatee;
+    address public delegator;
+
+    function mockFunctionContext() external view returns (FunctionContext memory) {
         return FunctionContext({
-            txn: mockBaseContext()
+            txn: this.mockBaseContext()
         });
     }
 
-    function mockEventContext() internal pure returns (EventContext memory) { 
+    function mockEventContext() external view returns (EventContext memory) {
         return EventContext({
-            txn: mockBaseContext()
+            txn: this.mockBaseContext()
         });
     }
 
-    function mockBaseContext() internal pure returns (TransactionContext memory) {
+    function mockBaseContext() external view returns (TransactionContext memory) {
         return TransactionContext({
-            call: mockCallFrame(),
+            call: this.mockCallFrame(),
             hash: bytes32(0),
             chainId: 1,
             isSuccessful: true
         });
     }
 
-    function mockCallFrame() internal pure returns (CallFrame memory) {
+    function mockCallFrame() external view returns (CallFrame memory) {
         return CallFrame({
-            caller: address(0x2121212121212121212121212121212121212121),
-            callee: address(0x4242424242424242424242424242424242424242),
-            callData: bytes(""),
-            value: 0,
-            callType: CallType.UNKNOWN,
-            callDepth: 0,
-            verificationSource: ContractVerificationSource.Unspecified,
-            delegatee: address(0),
-            delegator: address(0)
+            caller: this.caller,
+            callee: this.callee,
+            callData: this.callData,
+            value: this.value,
+            callType: this.callType,
+            callDepth: this.callDepth,
+            verificationSource: this.verificationSource,
+            delegatee: this.delegatee,
+            delegator: this.delegator
         });
+    }
+
+    function withCaller(address _caller) external returns (MockContexts) {
+        caller = _caller;
+        return this;
+    }
+
+    function withCallee(address _callee) external returns (MockContexts) {
+        callee = _callee;
+        return this;
+    }
+
+    function withCallData(bytes memory _callData) external returns (MockContexts) {
+        callData = _callData;
+        return this;
+    }
+
+    function withValue(uint256 _value) external returns (MockContexts) {
+        value = _value;
+        return this;
+    }
+
+    function withCallType(CallType _callType) external returns (MockContexts) {
+        callType = _callType;
+        return this;
+    }
+
+    function withCallDepth(uint256 _callDepth) external returns (MockContexts) {
+        callDepth = _callDepth;
+        return this;
+    }
+
+    function withVerificationSource(ContractVerificationSource _verificationSource) external returns (MockContexts) {
+        verificationSource = _verificationSource;
+        return this;
+    }
+
+    function withDelegator(address _delegator) external returns (MockContexts) {
+        delegator = _delegator;
+        return this;
+    }
+
+    function withDelegatee(address _delegatee) external returns (MockContexts) {
+        delegatee = _delegatee;
+        return this;
     }
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {RawTriggerType, RawTrigger} from "./Triggers.sol";
+import {RawTriggerType, RawTrigger, unboundedBlockRange} from "./Triggers.sol";
 import {RawCallContext, RawPreCallContext, RawBlockContext, RawLogContext} from "./Context.sol";
 
 abstract contract Raw$OnCall {
@@ -11,7 +11,8 @@ abstract contract Raw$OnCall {
         return RawTrigger({
             triggerType: RawTriggerType.CALL,
             handlerSelector: this.onCall.selector,
-            listenerCodehash: address(this).codehash
+            listenerCodehash: address(this).codehash,
+            blockRange: unboundedBlockRange(0)
         });
     }
 }
@@ -23,7 +24,8 @@ abstract contract Raw$OnPreCall {
         return RawTrigger({
             triggerType: RawTriggerType.PRE_CALL,
             handlerSelector: this.onPreCall.selector,
-            listenerCodehash: address(this).codehash
+            listenerCodehash: address(this).codehash,
+            blockRange: unboundedBlockRange(0)
         });
     }
 }
@@ -35,7 +37,8 @@ abstract contract Raw$OnBlock {
         return RawTrigger({
             triggerType: RawTriggerType.BLOCK,
             handlerSelector: this.onBlock.selector,
-            listenerCodehash: address(this).codehash
+            listenerCodehash: address(this).codehash,
+            blockRange: unboundedBlockRange(0)
         });
     }
 }
@@ -47,7 +50,8 @@ abstract contract Raw$OnLog {
         return RawTrigger({
             triggerType: RawTriggerType.LOG,
             handlerSelector: this.onLog.selector,
-            listenerCodehash: address(this).codehash
+            listenerCodehash: address(this).codehash,
+            blockRange: unboundedBlockRange(0)
         });
     }
 }

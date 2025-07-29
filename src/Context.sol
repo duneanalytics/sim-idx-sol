@@ -8,31 +8,31 @@ enum ContractVerificationSource {
 }
 
 enum CallType {
-  CALL,
-  CALLCODE,
-  STATICCALL,
-  DELEGATECALL,
-  CREATE,
-  CREATE2,
-  DEPLOYMENT,
-  UNKNOWN
+    CALL,
+    CALLCODE,
+    STATICCALL,
+    DELEGATECALL,
+    CREATE,
+    CREATE2,
+    DEPLOYMENT,
+    UNKNOWN
 }
 
 struct CallFrame {
-     // Address of the currently executing contract 
-    function () external returns (address) callee;    
-     // Address of the EOA / contract that invoked the current one
-    function () external returns (address) caller;      
+    // Address of the currently executing contract
+    function () external returns (address) callee;
+    // Address of the EOA / contract that invoked the current one
+    function () external returns (address) caller;
     // Address of the EOA / contract that delegated the current call (proxy)
     function () external returns (address) delegator;
     // Address of the contract that was delegated to (implementation)
     function () external returns (address) delegatee;
     // The calldata of the current call
-    function () external returns (bytes memory)  callData;
+    function () external returns (bytes memory) callData;
     // The depth of the current call
-    function () external returns (uint256)  callDepth;
+    function () external returns (uint256) callDepth;
     // Value transferred (in wei)
-    function () external returns (uint256)  value;
+    function () external returns (uint256) value;
     // The type of call
     function () external returns (CallType) callType;
     // The verification source of the current contract
@@ -41,17 +41,17 @@ struct CallFrame {
 
 struct TransactionContext {
     // The execution context of the current call
-    CallFrame  call;
+    CallFrame call;
     // Whether the external transaction is successful or reverted
     function () external returns (bool) isSuccessful;
     // Top level transaction hash
     function () external returns (bytes32) hash;
     // Network chain identifier
-    uint256 chainId; 
+    uint256 chainId;
 }
 
 struct FunctionContext {
-  TransactionContext txn;
+    TransactionContext txn;
 }
 
 struct EventContext {
@@ -59,7 +59,7 @@ struct EventContext {
 }
 
 struct PreFunctionContext {
-  TransactionContext txn;
+    TransactionContext txn;
 }
 
 struct RawCallContext {
@@ -82,5 +82,5 @@ struct RawLogContext {
 }
 
 struct RawBlockContext {
-  uint256 blockNumber;
+    uint256 blockNumber;
 }

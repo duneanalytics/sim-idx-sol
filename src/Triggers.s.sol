@@ -7,7 +7,9 @@ import {
     ContractTarget,
     GlobalTarget,
     TriggerType,
-    RawTriggerType
+    RawTriggerType,
+    BlockRangeKind,
+    BlockRange
 } from "lib/sim-idx-sol/src/Triggers.sol";
 import {Triggers} from "src/Main.sol";
 
@@ -23,11 +25,8 @@ contract HookScript is Script {
     function run(string calldata outputFile) public {
         vm.startBroadcast();
 
-        (
-            AbiTarget[] memory abiTargets,
-            ContractTarget[] memory contractTargets,
-            GlobalTarget[] memory globalTargets
-        ) = listener.getSimTargets();
+        (AbiTarget[] memory abiTargets, ContractTarget[] memory contractTargets, GlobalTarget[] memory globalTargets) =
+            listener.getSimTargets();
 
         string[] memory serializedAbiTargets = serializeAbiTarget(abiTargets);
         string[] memory serializedContractTargets = serializeContractTarget(contractTargets);
@@ -54,6 +53,10 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "target_type", "contract");
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
+
+            string memory block_range = serializeBlockRange(target[i].targetContract.blockRange);
+            vm.serializeString(objectKey, "block_range", block_range);
+
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
         return serializedTargets;
@@ -70,6 +73,10 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "target_type", "abi");
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
+
+            string memory block_range = serializeBlockRange(target[i].targetAbi.blockRange);
+            vm.serializeString(objectKey, "block_range", block_range);
+
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
         return serializedTargets;
@@ -83,9 +90,24 @@ contract HookScript is Script {
             vm.serializeUint(objectKey, "chain_id", target[i].chainId.chainId);
             vm.serializeString(objectKey, "target_type", "global");
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].listenerCodehash);
+
+            string memory block_range = serializeBlockRange(target[i].chainId.blockRange);
+            vm.serializeString(objectKey, "block_range", block_range);
+
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
         return serializedTargets;
+    }
+
+    function serializeBlockRange(BlockRange memory range) internal returns (string memory) {
+        string memory objectKey = "block_range";
+        string memory final_json;
+        // TODO: make this optional also?
+        final_json = vm.serializeUint(objectKey, "start_block", range.startBlock);
+        if (range.kind == BlockRangeKind.BOUNDED) {
+            final_json = vm.serializeUint(objectKey, "end_block", range.endBlock);
+        }
+        return final_json;
     }
 
     function concat(string[] memory a, string[] memory b) internal pure returns (string[] memory) {

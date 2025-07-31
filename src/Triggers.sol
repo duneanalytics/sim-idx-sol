@@ -14,11 +14,11 @@ struct BlockRange {
 }
 
 library BlockRangeLib {
-    function fromBlock(uint64 blockNum) internal pure returns (BlockRange memory) {
+    function withStartBlock(uint64 blockNum) internal pure returns (BlockRange memory) {
         return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: blockNum, endBlock: 0});
     }
 
-    function toBlock(BlockRange memory range, uint64 endBlock) internal pure returns (BlockRange memory) {
+    function withEndBlock(BlockRange memory range, uint64 endBlock) internal pure returns (BlockRange memory) {
         range.endBlock = endBlock;
         range.kind = BlockRangeKind.BOUNDED;
         return range;
@@ -27,16 +27,16 @@ library BlockRangeLib {
 
 using BlockRangeLib for BlockRange global;
 
-function createFullSync() pure returns (BlockRange memory) {
+function fullSync() pure returns (BlockRange memory) {
     return BlockRange({kind: BlockRangeKind.FULL_SYNC, startBlock: 0, endBlock: 0});
 }
 
-function createFromBlock(uint64 startBlock) pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: startBlock, endBlock: 0});
+function fromBlock(uint64 startBlock) pure returns (BlockRange memory) {
+    return BlockRangeLib.withStartBlock(startBlock);
 }
 
 function createBlockRange(uint64 startBlock, uint64 endBlock) pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.BOUNDED, startBlock: startBlock, endBlock: endBlock});
+    return BlockRangeLib.withStartBlock(startBlock).withEndBlock(endBlock);
 }
 
 enum Chains {

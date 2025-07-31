@@ -100,13 +100,14 @@ contract HookScript is Script {
         string memory rangeKey = string.concat(objectKey, "_range");
         
         if (range.kind == BlockRangeKind.FULL_SYNC) {
-            assert(range.startBlock == 0);
-            assert(range.endBlock == 0);
+            vm.assertEq(range.startBlock, 0, "start_block must be 0 for full_sync");
+            vm.assertEq(range.endBlock, 0, "end_block must be 0 for full_sync");
         } else if (range.kind == BlockRangeKind.BOUNDED) {
-            assert(range.endBlock != 0);
+            vm.assertEq(range.startBlock, 0, "start_block must be non-zero for bounded");
+            vm.assertNotEq(range.endBlock, 0, "end_block must be non-zero for bounded");
         } else if (range.kind == BlockRangeKind.FROM_BLOCK) {
-            assert(range.startBlock != 0);
-            assert(range.endBlock == 0);
+            vm.assertNotEq(range.startBlock, 0, "start_block must be non-zero for from_block");
+            vm.assertEq(range.endBlock, 0, "end_block must be 0 for from_block");
         } else {
             revert("Unsupported block range kind");
         }

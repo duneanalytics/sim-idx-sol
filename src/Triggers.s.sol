@@ -98,6 +98,18 @@ contract HookScript is Script {
 
     function serializeBlockRange(string memory objectKey, BlockRange memory range) internal {
         string memory rangeKey = string.concat(objectKey, "_range");
+        
+        if (range.kind == BlockRangeKind.FULL_SYNC) {
+            assert(range.startBlock == 0);
+            assert(range.endBlock == 0);
+        } else if (range.kind == BlockRangeKind.BOUNDED) {
+            assert(range.endBlock != 0);
+        } else if (range.kind == BlockRangeKind.FROM_BLOCK) {
+            assert(range.startBlock != 0);
+            assert(range.endBlock == 0);
+        } else {
+            revert("Unsupported block range kind");
+        }
 
         vm.serializeUint(rangeKey, "start_block", range.startBlock);
         vm.serializeUint(rangeKey, "end_block", range.endBlock);

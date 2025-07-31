@@ -1,6 +1,44 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+enum BlockRangeKind {
+    BOUNDED,                // (custom start, custom end)
+    FROM_BLOCK,             // (custom start, infinity)
+    FULL_SYNC               // (earliest available, infinity)
+}
+
+struct BlockRange {
+    BlockRangeKind kind;
+    uint64 startBlock;
+    uint64 endBlock;
+}
+
+library BlockRangeLib {
+    function fromBlock(uint64 blockNum) internal pure returns (BlockRange memory) {
+        return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: blockNum, endBlock: 0});
+    }
+
+    function toBlock(BlockRange memory range, uint64 endBlock) internal pure returns (BlockRange memory) {
+        range.endBlock = endBlock;
+        range.kind = BlockRangeKind.BOUNDED;
+        return range;
+    }
+}
+
+using BlockRangeLib for BlockRange global;
+
+function createFullSync() pure returns (BlockRange memory) {
+    return BlockRange({kind: BlockRangeKind.FULL_SYNC, startBlock: 0, endBlock: 0});
+}
+
+function createFromBlock(uint64 startBlock) pure returns (BlockRange memory) {
+    return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: startBlock, endBlock: 0});
+}
+
+function createBlockRange(uint64 startBlock, uint64 endBlock) pure returns (BlockRange memory) {
+    return BlockRange({kind: BlockRangeKind.BOUNDED, startBlock: startBlock, endBlock: endBlock});
+}
+
 enum Chains {
     Ethereum,           // 1
     EthereumSepolia,    // 11155111
@@ -31,76 +69,6 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     if (chain == Chains.Shape) return 360;
     revert("Unsupported chain");
 }
-
-struct UnboundedBlockRange {
-    Chains chain;
-    uint64 startBlock;
-}
-
-struct BoundedBlockRange {
-    Chains chain;
-    uint64 startBlock;
-    uint64 endBlock;
-}
-
-enum BlockRangeKind {
-    BOUNDED, // (custom start, custom end)
-    FROM_BLOCK, // (custom start, infinity)
-    FULL_SYNC // (earliest available, infinity)
-
-}
-
-struct BlockRange {
-    BlockRangeKind kind;
-    uint64 startBlock;
-    uint64 endBlock;
-}
-
-library BlockRangeLib {
-    function fromBlock(uint64 blockNum) internal pure returns (BlockRange memory) {
-        return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: blockNum, endBlock: type(uint64).max});
-    }
-
-    function toBlock(BlockRange memory range, uint64 endBlock) internal pure returns (BlockRange memory) {
-        range.endBlock = endBlock;
-        range.kind = BlockRangeKind.BOUNDED;
-        return range;
-    }
-}
-
-using BlockRangeLib for BlockRange global;
-
-function fullSync() pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.FULL_SYNC, startBlock: 0, endBlock: type(uint64).max});
-}
-
-function fromBlock(uint64 startBlock) pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: startBlock, endBlock: type(uint64).max});
-}
-
-function blockRange(uint64 startBlock, uint64 endBlock) pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.BOUNDED, startBlock: startBlock, endBlock: endBlock});
-}
-
-library ChainLibrary {
-    function withStartBlock(Chains chain, uint64 startBlock) internal pure returns (UnboundedBlockRange memory) {
-        return UnboundedBlockRange({chain: chain, startBlock: startBlock});
-    }
-
-    function withRange(Chains chain, uint64 startBlock, uint64 endBlock)
-        internal
-        pure
-        returns (BoundedBlockRange memory)
-    {
-        return BoundedBlockRange({chain: chain, startBlock: startBlock, endBlock: endBlock});
-    }
-
-    function withRange(Chains chain, BlockRange memory range) internal pure returns (BoundedBlockRange memory) {
-        return BoundedBlockRange({chain: chain, startBlock: range.startBlock, endBlock: range.endBlock});
-    }
-}
-
-using ChainLibrary for Chains global;
 
 enum TriggerType {
     FUNCTION,
@@ -182,6 +150,19 @@ function chainAbi(Chains chain, Abi memory abiData) pure returns (ChainIdAbi mem
     return ChainIdAbi({chainId: chainToChainId(chain), abi: abiData, blockRange: fullSync()});
 }
 
+library AbiLibrary {
+    function withBlockRange(ChainIdAbi memory chain, BlockRange memory newBlockRange)
+        internal
+        pure
+        returns (ChainIdAbi memory)
+    {
+        chain.blockRange = newBlockRange;
+        return chain;
+    }
+}
+
+using AbiLibrary for ChainIdAbi global;
+
 struct ChainIdGlobal {
     uint256 chainId;
     BlockRange blockRange;
@@ -192,12 +173,13 @@ function chainGlobal(Chains chain) pure returns (ChainIdGlobal memory) {
 }
 
 library ChainGlobalLibrary {
-    function fromStartBlock(ChainIdGlobal memory chainId, uint64 startBlock)
+    function withBlockRange(ChainIdGlobal memory chainId, BlockRange memory newBlockRange)
         internal
         pure
         returns (ChainIdGlobal memory)
     {
-        return ChainIdGlobal({chainId: chainId.chainId, blockRange: fromBlock(startBlock)});
+        chainId.blockRange = newBlockRange;
+        return chainId;
     }
 }
 

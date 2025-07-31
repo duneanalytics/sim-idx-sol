@@ -54,8 +54,7 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
 
-            string memory block_range = serializeBlockRange(target[i].targetContract.blockRange);
-            vm.serializeString(objectKey, "block_range", block_range);
+            serializeBlockRange(target[i].targetContract.blockRange);
 
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
@@ -74,8 +73,7 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
 
-            string memory block_range = serializeBlockRange(target[i].targetAbi.blockRange);
-            vm.serializeString(objectKey, "block_range", block_range);
+            serializeBlockRange(target[i].targetAbi.blockRange);
 
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
@@ -90,9 +88,7 @@ contract HookScript is Script {
             vm.serializeUint(objectKey, "chain_id", target[i].chainId.chainId);
             vm.serializeString(objectKey, "target_type", "global");
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].listenerCodehash);
-
-            string memory block_range = serializeBlockRange(target[i].chainId.blockRange);
-            vm.serializeString(objectKey, "block_range", block_range);
+            serializeBlockRange(target[i].chainId.blockRange);
 
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }

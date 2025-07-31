@@ -2,19 +2,18 @@
 pragma solidity ^0.8.13;
 
 enum Chains {
-    Ethereum, // 1
-    EthereumSepolia, // 11155111
-    Base, // 8453
-    BaseSepolia, // 84532
-    WorldChain, // 480
-    Mode, // 34443
-    Ink, // 57073
-    Unichain, // 130
-    Zora, // 7777777
-    BOB, // 60808
-    Soneium, // 1868
-    Shape // 360
-
+    Ethereum,           // 1
+    EthereumSepolia,    // 11155111
+    Base,               // 8453
+    BaseSepolia,        // 84532
+    WorldChain,         // 480
+    Mode,               // 34443
+    Ink,                // 57073
+    Unichain,           // 130
+    Zora,               // 7777777
+    BOB,                // 60808
+    Soneium,            // 1868
+    Shape               // 360
 }
 
 function chainToChainId(Chains chain) pure returns (uint256) {

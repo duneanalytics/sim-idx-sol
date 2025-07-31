@@ -1,14 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.13;
 
-import {
-    FunctionContext,
-    EventContext,
-    CallFrame,
-    TransactionContext,
-    ContractVerificationSource,
-    CallType
-} from "../Context.sol";
+import {FunctionContext, EventContext, CallFrame, TransactionContext, ContractVerificationSource, CallType} from "../Context.sol";
 
 contract MockContexts {
     address public caller;
@@ -24,11 +17,15 @@ contract MockContexts {
     bool public isSuccessful;
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
-        return FunctionContext({txn: this.mockBaseContext()});
+        return FunctionContext({
+            txn: this.mockBaseContext()
+        });
     }
 
     function mockEventContext() external view returns (EventContext memory) {
-        return EventContext({txn: this.mockBaseContext()});
+        return EventContext({
+            txn: this.mockBaseContext()
+        });
     }
 
     function mockBaseContext() external view returns (TransactionContext memory) {

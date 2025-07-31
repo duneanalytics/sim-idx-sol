@@ -103,8 +103,8 @@ contract HookScript is Script {
             vm.assertEq(range.startBlock, 0, "start_block must be 0 for full_sync");
             vm.assertEq(range.endBlock, 0, "end_block must be 0 for full_sync");
         } else if (range.kind == BlockRangeKind.BOUNDED) {
-            vm.assertEq(range.startBlock, 0, "start_block must be non-zero for bounded");
-            vm.assertNotEq(range.endBlock, 0, "end_block must be non-zero for bounded");
+            vm.assertNotEq(range.startBlock, 0, "start_block must be non-zero for bounded");
+            vm.assertNotEq(range.endBlock, 0, "end_block must be 0 for bounded");
         } else if (range.kind == BlockRangeKind.FROM_BLOCK) {
             vm.assertNotEq(range.startBlock, 0, "start_block must be non-zero for from_block");
             vm.assertEq(range.endBlock, 0, "end_block must be 0 for from_block");

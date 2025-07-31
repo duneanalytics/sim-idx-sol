@@ -44,7 +44,7 @@ contract HookScript is Script {
     function serializeContractTarget(ContractTarget[] memory target) internal returns (string[] memory) {
         string[] memory serializedTargets = new string[](target.length);
         for (uint256 i = 0; i < target.length; i++) {
-            string memory objectKey = "target";
+            string memory objectKey = "contract_target";
             vm.serializeUint(objectKey, "chain_id", target[i].targetContract.chainId);
             vm.serializeString(objectKey, "abi_name", target[i].trigger.abiName);
             vm.serializeAddress(objectKey, "target_contract", target[i].targetContract.contractAddress);
@@ -53,8 +53,8 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "target_type", "contract");
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
-
-            serializeBlockRange(target[i].targetContract.blockRange);
+            BlockRange memory blockRange = target[i].blockRange;
+            serializeBlockRange(objectKey, blockRange);
 
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
@@ -64,7 +64,7 @@ contract HookScript is Script {
     function serializeAbiTarget(AbiTarget[] memory target) internal returns (string[] memory) {
         string[] memory serializedTargets = new string[](target.length);
         for (uint256 i = 0; i < target.length; i++) {
-            string memory objectKey = "target";
+            string memory objectKey = "abi_target";
             vm.serializeUint(objectKey, "chain_id", target[i].targetAbi.chainId);
             vm.serializeString(objectKey, "abi_name", target[i].targetAbi.abi.name);
             bytes memory functionSelector = abi.encode(target[i].trigger.selector);
@@ -72,8 +72,8 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "target_type", "abi");
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
-
-            serializeBlockRange(target[i].targetAbi.blockRange);
+            BlockRange memory blockRange = target[i].blockRange;
+            serializeBlockRange(objectKey, blockRange);
 
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
@@ -85,25 +85,25 @@ contract HookScript is Script {
         for (uint256 i = 0; i < target.length; i++) {
             string memory objectKey = "generic_target";
             vm.serializeString(objectKey, "trigger_type", target[i].triggerType.toString());
-            vm.serializeUint(objectKey, "chain_id", target[i].chainId.chainId);
+            vm.serializeUint(objectKey, "chain_id", target[i].chainId);
             vm.serializeString(objectKey, "target_type", "global");
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].listenerCodehash);
-            serializeBlockRange(target[i].chainId.blockRange);
+            BlockRange memory blockRange = target[i].blockRange;
+            serializeBlockRange(objectKey, blockRange);
 
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
         return serializedTargets;
     }
 
-    function serializeBlockRange(BlockRange memory range) internal returns (string memory) {
-        string memory objectKey = "block_range";
-        string memory final_json;
-        // TODO: make this optional also?
-        final_json = vm.serializeUint(objectKey, "start_block", range.startBlock);
-        if (range.kind == BlockRangeKind.BOUNDED) {
-            final_json = vm.serializeUint(objectKey, "end_block", range.endBlock);
-        }
-        return final_json;
+    function serializeBlockRange(string memory objectKey, BlockRange memory range) internal {
+        string memory rangeKey = string.concat(objectKey, "_range");
+
+        vm.serializeUint(rangeKey, "start_block", range.startBlock);
+        vm.serializeUint(rangeKey, "end_block", range.endBlock);
+        string memory blockRangeJson = vm.serializeString(rangeKey, "kind", BlockRangeLib.toString(range.kind));
+
+        vm.serializeString(objectKey, "block_range", blockRangeJson);
     }
 
     function concat(string[] memory a, string[] memory b) internal pure returns (string[] memory) {
@@ -160,3 +160,17 @@ library CustomTriggerTypeLib {
 
 using CustomTriggerTypeLib for TriggerType;
 using CustomTriggerTypeLib for RawTriggerType;
+
+library BlockRangeLib {
+    function toString(BlockRangeKind kind) internal pure returns (string memory) {
+        if (kind == BlockRangeKind.FULL_SYNC) {
+            return "full_sync";
+        } else if (kind == BlockRangeKind.BOUNDED) {
+            return "bounded";
+        } else if (kind == BlockRangeKind.FROM_BLOCK) {
+            return "from_block";
+        } else {
+            revert("Invalid block range kind");
+        }
+    }
+}

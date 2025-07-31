@@ -35,50 +35,60 @@ function chainToChainId(Chains chain) pure returns (uint256) {
 
 struct UnboundedBlockRange {
     Chains chain;
-    uint256 startBlock;
+    uint64 startBlock;
 }
 
 struct BoundedBlockRange {
     Chains chain;
-    uint256 startBlock;
-    uint256 endBlock;
+    uint64 startBlock;
+    uint64 endBlock;
 }
 
 enum BlockRangeKind {
-    UNBOUNDED,
-    BOUNDED
+    BOUNDED, // (custom start, custom end)
+    FROM_BLOCK, // (custom start, infinity)
+    FULL_SYNC // (earliest available, infinity)
+
 }
 
 struct BlockRange {
     BlockRangeKind kind;
-    uint256 startBlock;
-    uint256 endBlock;
+    uint64 startBlock;
+    uint64 endBlock;
 }
 
-function unboundedBlockRange(uint256 startBlock) pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.UNBOUNDED, startBlock: startBlock, endBlock: type(uint256).max});
+library BlockRangeLib {
+    function fromBlock(uint64 blockNum) internal pure returns (BlockRange memory) {
+        return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: blockNum, endBlock: type(uint64).max});
+    }
+
+    function toBlock(BlockRange memory range, uint64 endBlock) internal pure returns (BlockRange memory) {
+        range.endBlock = endBlock;
+        range.kind = BlockRangeKind.BOUNDED;
+        return range;
+    }
 }
 
-function boundedBlockRange(uint256 startBlock, uint256 endBlock) pure returns (BlockRange memory) {
+using BlockRangeLib for BlockRange global;
+
+function fullSync() pure returns (BlockRange memory) {
+    return BlockRange({kind: BlockRangeKind.FULL_SYNC, startBlock: 0, endBlock: type(uint64).max});
+}
+
+function fromBlock(uint64 startBlock) pure returns (BlockRange memory) {
+    return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: startBlock, endBlock: type(uint64).max});
+}
+
+function blockRange(uint64 startBlock, uint64 endBlock) pure returns (BlockRange memory) {
     return BlockRange({kind: BlockRangeKind.BOUNDED, startBlock: startBlock, endBlock: endBlock});
 }
 
-library BlockRangeLibrary {
-    function isUnbounded(BlockRange memory range) public pure returns (bool) {
-        return range.kind == BlockRangeKind.UNBOUNDED;
-    }
-}
-
-using BlockRangeLibrary for BlockRange global;
-
 library ChainLibrary {
-    // or fromBlock?
-    function withStartBlock(Chains chain, uint256 startBlock) internal pure returns (UnboundedBlockRange memory) {
-        // Return data type likely need to be unified `ChainIdContract` etc.
+    function withStartBlock(Chains chain, uint64 startBlock) internal pure returns (UnboundedBlockRange memory) {
         return UnboundedBlockRange({chain: chain, startBlock: startBlock});
     }
 
-    function withRange(Chains chain, uint256 startBlock, uint256 endBlock)
+    function withRange(Chains chain, uint64 startBlock, uint64 endBlock)
         internal
         pure
         returns (BoundedBlockRange memory)
@@ -112,14 +122,12 @@ struct Trigger {
     TriggerType triggerType;
     bytes32 listenerCodehash;
     bytes32 handlerSelector;
-    BlockRange blockRange;
 }
 
 struct RawTrigger {
     RawTriggerType triggerType;
     bytes32 handlerSelector;
     bytes32 listenerCodehash;
-    BlockRange blockRange;
 }
 
 struct ContractTarget {
@@ -127,6 +135,7 @@ struct ContractTarget {
     Trigger trigger;
     bytes32 handlerSelector;
     bytes32 listenerCodehash;
+    BlockRange blockRange;
 }
 
 struct ChainIdContract {
@@ -135,37 +144,22 @@ struct ChainIdContract {
     BlockRange blockRange;
 }
 
-function chainContract(UnboundedBlockRange memory blockRange, address contractAddress)
-    pure
-    returns (ChainIdContract memory)
-{
-    Chains chainId = blockRange.chain;
-    return ChainIdContract({
-        chainId: chainToChainId(chainId),
-        contractAddress: contractAddress,
-        blockRange: unboundedBlockRange(1)
-    });
-}
-
-function chainContract(BoundedBlockRange memory blockRange, address contractAddress)
-    pure
-    returns (ChainIdContract memory)
-{
-    Chains chainId = blockRange.chain;
-    return ChainIdContract({
-        chainId: chainToChainId(chainId),
-        contractAddress: contractAddress,
-        blockRange: unboundedBlockRange(1)
-    });
-}
-
 function chainContract(Chains chain, address contractAddress) pure returns (ChainIdContract memory) {
-    return ChainIdContract({
-        chainId: chainToChainId(chain),
-        contractAddress: contractAddress,
-        blockRange: unboundedBlockRange(1)
-    });
+    return ChainIdContract({chainId: chainToChainId(chain), contractAddress: contractAddress, blockRange: fullSync()});
 }
+
+library ChainContractLibrary {
+    function withBlockRange(ChainIdContract memory chain, BlockRange memory newBlockRange)
+        internal
+        pure
+        returns (ChainIdContract memory)
+    {
+        chain.blockRange = newBlockRange;
+        return chain;
+    }
+}
+
+using ChainContractLibrary for ChainIdContract global;
 
 struct Abi {
     string name;
@@ -176,6 +170,7 @@ struct AbiTarget {
     Trigger trigger;
     bytes32 handlerSelector;
     bytes32 listenerCodehash;
+    BlockRange blockRange;
 }
 
 struct ChainIdAbi {
@@ -185,7 +180,7 @@ struct ChainIdAbi {
 }
 
 function chainAbi(Chains chain, Abi memory abiData) pure returns (ChainIdAbi memory) {
-    return ChainIdAbi({chainId: chainToChainId(chain), abi: abiData, blockRange: unboundedBlockRange(1)});
+    return ChainIdAbi({chainId: chainToChainId(chain), abi: abiData, blockRange: fullSync()});
 }
 
 struct ChainIdGlobal {
@@ -194,8 +189,20 @@ struct ChainIdGlobal {
 }
 
 function chainGlobal(Chains chain) pure returns (ChainIdGlobal memory) {
-    return ChainIdGlobal({chainId: chainToChainId(chain), blockRange: unboundedBlockRange(1)});
+    return ChainIdGlobal({chainId: chainToChainId(chain), blockRange: fullSync()});
 }
+
+library ChainGlobalLibrary {
+    function fromStartBlock(ChainIdGlobal memory chainId, uint64 startBlock)
+        internal
+        pure
+        returns (ChainIdGlobal memory)
+    {
+        return ChainIdGlobal({chainId: chainId.chainId, blockRange: fromBlock(startBlock)});
+    }
+}
+
+using ChainGlobalLibrary for ChainIdGlobal global;
 
 struct CustomTriggerContractTarget {
     ChainIdContract targetContract;
@@ -210,10 +217,11 @@ struct CustomTriggerTypeAbiTarget {
 }
 
 struct GlobalTarget {
-    ChainIdGlobal chainId;
+    uint256 chainId;
     RawTriggerType triggerType;
     bytes32 handlerSelector;
     bytes32 listenerCodehash;
+    BlockRange blockRange;
 }
 
 abstract contract BaseTriggers {
@@ -229,7 +237,8 @@ abstract contract BaseTriggers {
                 targetContract: targetContract,
                 trigger: triggerFunction,
                 handlerSelector: triggerFunction.handlerSelector,
-                listenerCodehash: triggerFunction.listenerCodehash
+                listenerCodehash: triggerFunction.listenerCodehash,
+                blockRange: targetContract.blockRange
             })
         );
     }
@@ -246,7 +255,8 @@ abstract contract BaseTriggers {
                 targetAbi: targetAbi,
                 trigger: triggerFunction,
                 handlerSelector: triggerFunction.handlerSelector,
-                listenerCodehash: triggerFunction.listenerCodehash
+                listenerCodehash: triggerFunction.listenerCodehash,
+                blockRange: targetAbi.blockRange
             })
         );
     }
@@ -257,13 +267,14 @@ abstract contract BaseTriggers {
         }
     }
 
-    function addTrigger(ChainIdGlobal memory chainId, RawTrigger memory trigger) internal {
+    function addTrigger(ChainIdGlobal memory chain, RawTrigger memory trigger) internal {
         _globalTargets.push(
             GlobalTarget({
-                chainId: chainId,
+                chainId: chain.chainId,
                 triggerType: trigger.triggerType,
                 handlerSelector: trigger.handlerSelector,
-                listenerCodehash: trigger.listenerCodehash
+                listenerCodehash: trigger.listenerCodehash,
+                blockRange: chain.blockRange
             })
         );
     }

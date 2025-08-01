@@ -163,12 +163,12 @@ using CustomTriggerTypeLib for RawTriggerType;
 
 library BlockRangeLib {
     function toString(BlockRangeKind kind) internal pure returns (string memory) {
-        if (kind == BlockRangeKind.FULL_SYNC) {
-            return "full_sync";
-        } else if (kind == BlockRangeKind.BOUNDED) {
-            return "bounded";
-        } else if (kind == BlockRangeKind.FROM_BLOCK) {
-            return "from_block";
+        if (kind == BlockRangeKind.RangeFull) {
+            return "range_full";
+        } else if (kind == BlockRangeKind.RangeInclusive) {
+            return "range_inclusive";
+        } else if (kind == BlockRangeKind.RangeFrom) {
+            return "range_from";
         } else {
             revert("Invalid block range kind");
         }

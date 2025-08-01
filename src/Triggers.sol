@@ -27,15 +27,15 @@ library BlockRangeLib {
 
 using BlockRangeLib for BlockRange global;
 
-function fullSync() pure returns (BlockRange memory) {
+function blockRangeFull() pure returns (BlockRange memory) {
     return BlockRange({kind: BlockRangeKind.RangeFull, startBlock: 0, endBlock: 0});
 }
 
-function fromBlock(uint64 startBlock) pure returns (BlockRange memory) {
+function blockRangeFrom(uint64 startBlock) pure returns (BlockRange memory) {
     return BlockRangeLib.withStartBlock(startBlock);
 }
 
-function createBlockRange(uint64 startBlock, uint64 endBlock) pure returns (BlockRange memory) {
+function blockRangeInclusive(uint64 startBlock, uint64 endBlock) pure returns (BlockRange memory) {
     return BlockRangeLib.withStartBlock(startBlock).withEndBlock(endBlock);
 }
 
@@ -69,6 +69,36 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     if (chain == Chains.Shape) return 360;
     revert("Unsupported chain");
 }
+
+struct ChainWithRange {
+    uint256 chainId;
+    BlockRange blockRange;
+}
+
+library ChainsLib {
+    function withStartBlock(Chains chain, uint64 blockNum) internal pure returns (ChainWithRange memory) {
+        return ChainWithRange({
+            chainId: chainToChainId(chain),
+            blockRange: BlockRangeLib.withStartBlock(blockNum)
+        });
+    }
+
+    function withEndBlock(ChainWithRange memory chain, uint64 endBlock) internal pure returns (ChainWithRange memory) {
+        chain.blockRange = BlockRangeLib.withEndBlock(chain.blockRange, endBlock);
+        return chain;
+    }
+
+    function withBlockRange(Chains chain, BlockRange memory range) internal pure returns (ChainWithRange memory) {
+        return ChainWithRange({
+            chainId: chainToChainId(chain),
+            blockRange: range
+        });
+    }
+}
+
+using ChainsLib for Chains global;
+using ChainsLib for ChainWithRange global;
+
 
 enum TriggerType {
     FUNCTION,
@@ -111,10 +141,6 @@ struct ChainIdContract {
     BlockRange blockRange;
 }
 
-function chainContract(Chains chain, address contractAddress) pure returns (ChainIdContract memory) {
-    return ChainIdContract({chainId: chainToChainId(chain), contractAddress: contractAddress, blockRange: fullSync()});
-}
-
 library ChainContractLibrary {
     function withBlockRange(ChainIdContract memory chain, BlockRange memory newBlockRange)
         internal
@@ -127,6 +153,14 @@ library ChainContractLibrary {
 }
 
 using ChainContractLibrary for ChainIdContract global;
+
+function chainContract(Chains chain, address contractAddress) pure returns (ChainIdContract memory) {
+    return ChainIdContract({chainId: chainToChainId(chain), contractAddress: contractAddress, blockRange: blockRangeFull()});
+}
+
+function chainContract(ChainWithRange memory chain, address contractAddress) pure returns (ChainIdContract memory) {
+    return ChainIdContract({chainId: chain.chainId, contractAddress: contractAddress, blockRange: chain.blockRange});
+}
 
 struct Abi {
     string name;
@@ -147,7 +181,11 @@ struct ChainIdAbi {
 }
 
 function chainAbi(Chains chain, Abi memory abiData) pure returns (ChainIdAbi memory) {
-    return ChainIdAbi({chainId: chainToChainId(chain), abi: abiData, blockRange: fullSync()});
+    return ChainIdAbi({chainId: chainToChainId(chain), abi: abiData, blockRange: blockRangeFull()});
+}
+
+function chainAbi(ChainWithRange memory chain, Abi memory abiData) pure returns (ChainIdAbi memory) {
+    return ChainIdAbi({chainId: chain.chainId, abi: abiData, blockRange: chain.blockRange});
 }
 
 library AbiLibrary {
@@ -169,7 +207,11 @@ struct ChainIdGlobal {
 }
 
 function chainGlobal(Chains chain) pure returns (ChainIdGlobal memory) {
-    return ChainIdGlobal({chainId: chainToChainId(chain), blockRange: fullSync()});
+    return ChainIdGlobal({chainId: chainToChainId(chain), blockRange: blockRangeFull()});
+}
+
+function chainGlobal(ChainWithRange memory chain) pure returns (ChainIdGlobal memory) {
+    return ChainIdGlobal({chainId: chain.chainId, blockRange: chain.blockRange});
 }
 
 library ChainGlobalLibrary {

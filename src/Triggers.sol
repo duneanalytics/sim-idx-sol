@@ -9,17 +9,17 @@ enum BlockRangeKind {
 
 struct BlockRange {
     BlockRangeKind kind;
-    uint64 startBlock;
-    uint64 endBlock;
+    uint64 startBlockInclusive;
+    uint64 endBlockInclusive;
 }
 
 library BlockRangeLib {
-    function withStartBlock(uint64 blockNum) internal pure returns (BlockRange memory) {
-        return BlockRange({kind: BlockRangeKind.RangeFrom, startBlock: blockNum, endBlock: 0});
+    function withStartBlock(uint64 startBlockInclusive) internal pure returns (BlockRange memory) {
+        return BlockRange({kind: BlockRangeKind.RangeFrom, startBlockInclusive: startBlockInclusive, endBlockInclusive: 0});
     }
 
-    function withEndBlock(BlockRange memory range, uint64 endBlock) internal pure returns (BlockRange memory) {
-        range.endBlock = endBlock;
+    function withEndBlock(BlockRange memory range, uint64 endBlockInclusive) internal pure returns (BlockRange memory) {
+        range.endBlockInclusive = endBlockInclusive;
         range.kind = BlockRangeKind.RangeInclusive;
         return range;
     }
@@ -28,15 +28,15 @@ library BlockRangeLib {
 using BlockRangeLib for BlockRange global;
 
 function blockRangeFull() pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.RangeFull, startBlock: 0, endBlock: 0});
+    return BlockRange({kind: BlockRangeKind.RangeFull, startBlockInclusive: 0, endBlockInclusive: 0});
 }
 
 function blockRangeFrom(uint64 startBlockInclusive) pure returns (BlockRange memory) {
-    return BlockRangeLib.withStartBlock(startBlock);
+    return BlockRangeLib.withStartBlock(startBlockInclusive);
 }
 
 function blockRangeInclusive(uint64 startBlockInclusive, uint64 endBlockInclusive) pure returns (BlockRange memory) {
-    return BlockRangeLib.withStartBlock(startBlock).withEndBlock(endBlock);
+    return BlockRangeLib.withStartBlock(startBlockInclusive).withEndBlock(endBlockInclusive);
 }
 
 enum Chains {
@@ -76,15 +76,15 @@ struct ChainWithRange {
 }
 
 library ChainsLib {
-    function withStartBlock(Chains chain, uint64 blockNum) internal pure returns (ChainWithRange memory) {
+    function withStartBlock(Chains chain, uint64 startBlockInclusive) internal pure returns (ChainWithRange memory) {
         return ChainWithRange({
             chainId: chainToChainId(chain),
-            blockRange: BlockRangeLib.withStartBlock(blockNum)
+            blockRange: BlockRangeLib.withStartBlock(startBlockInclusive)
         });
     }
 
-    function withEndBlock(ChainWithRange memory chain, uint64 endBlock) internal pure returns (ChainWithRange memory) {
-        chain.blockRange = BlockRangeLib.withEndBlock(chain.blockRange, endBlock);
+    function withEndBlock(ChainWithRange memory chain, uint64 endBlockInclusive) internal pure returns (ChainWithRange memory) {
+        chain.blockRange = BlockRangeLib.withEndBlock(chain.blockRange, endBlockInclusive);
         return chain;
     }
 

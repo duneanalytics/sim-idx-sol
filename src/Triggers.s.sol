@@ -99,8 +99,8 @@ contract HookScript is Script {
     function serializeBlockRange(string memory objectKey, BlockRange memory range) internal {
         string memory rangeKey = string.concat(objectKey, "_range");
 
-        vm.serializeUint(rangeKey, "start_block", range.startBlock);
-        vm.serializeUint(rangeKey, "end_block", range.endBlock);
+        vm.serializeUint(rangeKey, "start_block", range.startBlockInclusive);
+        vm.serializeUint(rangeKey, "end_block", range.endBlockInclusive);
         string memory blockRangeJson = vm.serializeString(rangeKey, "kind", BlockRangeLib.toString(range.kind));
 
         vm.serializeString(objectKey, "block_range", blockRangeJson);

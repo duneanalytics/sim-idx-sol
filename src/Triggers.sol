@@ -2,8 +2,8 @@
 pragma solidity ^0.8.13;
 
 enum BlockRangeKind {
-    RangeInclusive,    // Blocks from fixed start to end   
-    RangeFrom,         // Blocks from fixed start to unbounded end         
+    RangeInclusive,    // Blocks from inclusive start to inclusive end   
+    RangeFrom,         // Blocks from inclusive start to unbounded end         
     RangeFull          // All blocks from earliest available to unbounded end                
 }
 
@@ -31,11 +31,11 @@ function blockRangeFull() pure returns (BlockRange memory) {
     return BlockRange({kind: BlockRangeKind.RangeFull, startBlock: 0, endBlock: 0});
 }
 
-function blockRangeFrom(uint64 startBlock) pure returns (BlockRange memory) {
+function blockRangeFrom(uint64 startBlockInclusive) pure returns (BlockRange memory) {
     return BlockRangeLib.withStartBlock(startBlock);
 }
 
-function blockRangeInclusive(uint64 startBlock, uint64 endBlock) pure returns (BlockRange memory) {
+function blockRangeInclusive(uint64 startBlockInclusive, uint64 endBlockInclusive) pure returns (BlockRange memory) {
     return BlockRangeLib.withStartBlock(startBlock).withEndBlock(endBlock);
 }
 

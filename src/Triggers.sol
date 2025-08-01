@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 enum BlockRangeKind {
-    BOUNDED,                // (custom start, custom end)
-    FROM_BLOCK,             // (custom start, infinity)
-    FULL_SYNC               // (earliest available, infinity)
+    RangeInclusive,    // Blocks from fixed start to end   
+    RangeFrom,         // Blocks from fixed start to unbounded end         
+    RangeFull          // All blocks from earliest available to unbounded end                
 }
 
 struct BlockRange {
@@ -15,12 +15,12 @@ struct BlockRange {
 
 library BlockRangeLib {
     function withStartBlock(uint64 blockNum) internal pure returns (BlockRange memory) {
-        return BlockRange({kind: BlockRangeKind.FROM_BLOCK, startBlock: blockNum, endBlock: 0});
+        return BlockRange({kind: BlockRangeKind.RangeFrom, startBlock: blockNum, endBlock: 0});
     }
 
     function withEndBlock(BlockRange memory range, uint64 endBlock) internal pure returns (BlockRange memory) {
         range.endBlock = endBlock;
-        range.kind = BlockRangeKind.BOUNDED;
+        range.kind = BlockRangeKind.RangeInclusive;
         return range;
     }
 }
@@ -28,7 +28,7 @@ library BlockRangeLib {
 using BlockRangeLib for BlockRange global;
 
 function fullSync() pure returns (BlockRange memory) {
-    return BlockRange({kind: BlockRangeKind.FULL_SYNC, startBlock: 0, endBlock: 0});
+    return BlockRange({kind: BlockRangeKind.RangeFull, startBlock: 0, endBlock: 0});
 }
 
 function fromBlock(uint64 startBlock) pure returns (BlockRange memory) {

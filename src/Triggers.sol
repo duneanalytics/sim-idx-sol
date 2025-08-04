@@ -1,6 +1,44 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+enum BlockRangeKind {
+    RangeInclusive,    // Blocks from inclusive start to inclusive end   
+    RangeFrom,         // Blocks from inclusive start to unbounded end         
+    RangeFull          // All blocks from earliest available to unbounded end                
+}
+
+struct BlockRange {
+    BlockRangeKind kind;
+    uint64 startBlockInclusive;
+    uint64 endBlockInclusive;
+}
+
+library BlockRangeLib {
+    function withStartBlock(uint64 startBlockInclusive) internal pure returns (BlockRange memory) {
+        return BlockRange({kind: BlockRangeKind.RangeFrom, startBlockInclusive: startBlockInclusive, endBlockInclusive: 0});
+    }
+
+    function withEndBlock(BlockRange memory range, uint64 endBlockInclusive) internal pure returns (BlockRange memory) {
+        range.endBlockInclusive = endBlockInclusive;
+        range.kind = BlockRangeKind.RangeInclusive;
+        return range;
+    }
+}
+
+using BlockRangeLib for BlockRange global;
+
+function blockRangeFull() pure returns (BlockRange memory) {
+    return BlockRange({kind: BlockRangeKind.RangeFull, startBlockInclusive: 0, endBlockInclusive: 0});
+}
+
+function blockRangeFrom(uint64 startBlockInclusive) pure returns (BlockRange memory) {
+    return BlockRangeLib.withStartBlock(startBlockInclusive);
+}
+
+function blockRangeInclusive(uint64 startBlockInclusive, uint64 endBlockInclusive) pure returns (BlockRange memory) {
+    return BlockRangeLib.withStartBlock(startBlockInclusive).withEndBlock(endBlockInclusive);
+}
+
 enum Chains {
     Ethereum,           // 1
     EthereumSepolia,    // 11155111
@@ -31,6 +69,36 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     if (chain == Chains.Shape) return 360;
     revert("Unsupported chain");
 }
+
+struct ChainWithRange {
+    uint256 chainId;
+    BlockRange blockRange;
+}
+
+library ChainsLib {
+    function withStartBlock(Chains chain, uint64 startBlockInclusive) internal pure returns (ChainWithRange memory) {
+        return ChainWithRange({
+            chainId: chainToChainId(chain),
+            blockRange: BlockRangeLib.withStartBlock(startBlockInclusive)
+        });
+    }
+
+    function withEndBlock(ChainWithRange memory chain, uint64 endBlockInclusive) internal pure returns (ChainWithRange memory) {
+        chain.blockRange = BlockRangeLib.withEndBlock(chain.blockRange, endBlockInclusive);
+        return chain;
+    }
+
+    function withBlockRange(Chains chain, BlockRange memory range) internal pure returns (ChainWithRange memory) {
+        return ChainWithRange({
+            chainId: chainToChainId(chain),
+            blockRange: range
+        });
+    }
+}
+
+using ChainsLib for Chains global;
+using ChainsLib for ChainWithRange global;
+
 
 enum TriggerType {
     FUNCTION,
@@ -64,18 +132,34 @@ struct ContractTarget {
     Trigger trigger;
     bytes32 handlerSelector;
     bytes32 listenerCodehash;
+    BlockRange blockRange;
 }
 
 struct ChainIdContract {
     uint256 chainId;
     address contractAddress;
+    BlockRange blockRange;
 }
 
+library ChainContractLibrary {
+    function withBlockRange(ChainIdContract memory chain, BlockRange memory newBlockRange)
+        internal
+        pure
+        returns (ChainIdContract memory)
+    {
+        chain.blockRange = newBlockRange;
+        return chain;
+    }
+}
+
+using ChainContractLibrary for ChainIdContract global;
+
 function chainContract(Chains chain, address contractAddress) pure returns (ChainIdContract memory) {
-    return ChainIdContract({
-        chainId: chainToChainId(chain),
-        contractAddress: contractAddress
-    });
+    return ChainIdContract({chainId: chainToChainId(chain), contractAddress: contractAddress, blockRange: blockRangeFull()});
+}
+
+function chainContract(ChainWithRange memory chain, address contractAddress) pure returns (ChainIdContract memory) {
+    return ChainIdContract({chainId: chain.chainId, contractAddress: contractAddress, blockRange: chain.blockRange});
 }
 
 struct Abi {
@@ -87,29 +171,61 @@ struct AbiTarget {
     Trigger trigger;
     bytes32 handlerSelector;
     bytes32 listenerCodehash;
+    BlockRange blockRange;
 }
 
 struct ChainIdAbi {
     uint256 chainId;
     Abi abi;
+    BlockRange blockRange;
 }
 
 function chainAbi(Chains chain, Abi memory abiData) pure returns (ChainIdAbi memory) {
-    return ChainIdAbi({
-        chainId: chainToChainId(chain),
-        abi: abiData
-    });
+    return ChainIdAbi({chainId: chainToChainId(chain), abi: abiData, blockRange: blockRangeFull()});
 }
+
+function chainAbi(ChainWithRange memory chain, Abi memory abiData) pure returns (ChainIdAbi memory) {
+    return ChainIdAbi({chainId: chain.chainId, abi: abiData, blockRange: chain.blockRange});
+}
+
+library AbiLibrary {
+    function withBlockRange(ChainIdAbi memory chain, BlockRange memory newBlockRange)
+        internal
+        pure
+        returns (ChainIdAbi memory)
+    {
+        chain.blockRange = newBlockRange;
+        return chain;
+    }
+}
+
+using AbiLibrary for ChainIdAbi global;
 
 struct ChainIdGlobal {
     uint256 chainId;
+    BlockRange blockRange;
 }
 
 function chainGlobal(Chains chain) pure returns (ChainIdGlobal memory) {
-    return ChainIdGlobal({
-        chainId: chainToChainId(chain)
-    });
+    return ChainIdGlobal({chainId: chainToChainId(chain), blockRange: blockRangeFull()});
 }
+
+function chainGlobal(ChainWithRange memory chain) pure returns (ChainIdGlobal memory) {
+    return ChainIdGlobal({chainId: chain.chainId, blockRange: chain.blockRange});
+}
+
+library ChainGlobalLibrary {
+    function withBlockRange(ChainIdGlobal memory chainId, BlockRange memory newBlockRange)
+        internal
+        pure
+        returns (ChainIdGlobal memory)
+    {
+        chainId.blockRange = newBlockRange;
+        return chainId;
+    }
+}
+
+using ChainGlobalLibrary for ChainIdGlobal global;
 
 struct CustomTriggerContractTarget {
     ChainIdContract targetContract;
@@ -124,10 +240,11 @@ struct CustomTriggerTypeAbiTarget {
 }
 
 struct GlobalTarget {
-    ChainIdGlobal chainId;
+    uint256 chainId;
     RawTriggerType triggerType;
     bytes32 handlerSelector;
     bytes32 listenerCodehash;
+    BlockRange blockRange;
 }
 
 abstract contract BaseTriggers {
@@ -138,12 +255,15 @@ abstract contract BaseTriggers {
     function triggers() external virtual;
 
     function addTrigger(ChainIdContract memory targetContract, Trigger memory triggerFunction) internal {
-        _contractTargets.push(ContractTarget({
-            targetContract: targetContract,
-            trigger: triggerFunction,
-            handlerSelector: triggerFunction.handlerSelector,
-            listenerCodehash: triggerFunction.listenerCodehash
-        }));
+        _contractTargets.push(
+            ContractTarget({
+                targetContract: targetContract,
+                trigger: triggerFunction,
+                handlerSelector: triggerFunction.handlerSelector,
+                listenerCodehash: triggerFunction.listenerCodehash,
+                blockRange: targetContract.blockRange
+            })
+        );
     }
 
     function addTriggers(ChainIdContract memory targetContract, Trigger[] memory triggers_) internal {
@@ -153,12 +273,15 @@ abstract contract BaseTriggers {
     }
 
     function addTrigger(ChainIdAbi memory targetAbi, Trigger memory triggerFunction) internal {
-        _abiTargets.push(AbiTarget({
-            targetAbi: targetAbi,
-            trigger: triggerFunction,
-            handlerSelector: triggerFunction.handlerSelector,
-            listenerCodehash: triggerFunction.listenerCodehash
-        }));
+        _abiTargets.push(
+            AbiTarget({
+                targetAbi: targetAbi,
+                trigger: triggerFunction,
+                handlerSelector: triggerFunction.handlerSelector,
+                listenerCodehash: triggerFunction.listenerCodehash,
+                blockRange: targetAbi.blockRange
+            })
+        );
     }
 
     function addTriggers(ChainIdAbi memory targetAbi, Trigger[] memory triggers_) internal {
@@ -167,13 +290,16 @@ abstract contract BaseTriggers {
         }
     }
 
-    function addTrigger(ChainIdGlobal memory chainId, RawTrigger memory target) internal {
-        _globalTargets.push(GlobalTarget({
-            chainId: chainId,
-            triggerType: target.triggerType,
-            handlerSelector: target.handlerSelector,
-            listenerCodehash: target.listenerCodehash
-        }));
+    function addTrigger(ChainIdGlobal memory chain, RawTrigger memory trigger) internal {
+        _globalTargets.push(
+            GlobalTarget({
+                chainId: chain.chainId,
+                triggerType: trigger.triggerType,
+                handlerSelector: trigger.handlerSelector,
+                listenerCodehash: trigger.listenerCodehash,
+                blockRange: chain.blockRange
+            })
+        );
     }
 
     function addTriggers(ChainIdGlobal memory chainId, RawTrigger[] memory triggers_) internal {
@@ -182,7 +308,11 @@ abstract contract BaseTriggers {
         }
     }
 
-    function getSimTargets() view external returns (AbiTarget[] memory, ContractTarget[] memory, GlobalTarget[] memory) {
+    function getSimTargets()
+        external
+        view
+        returns (AbiTarget[] memory, ContractTarget[] memory, GlobalTarget[] memory)
+    {
         return (_abiTargets, _contractTargets, _globalTargets);
     }
 }

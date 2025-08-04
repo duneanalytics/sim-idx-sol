@@ -7,7 +7,9 @@ import {
     ContractTarget,
     GlobalTarget,
     TriggerType,
-    RawTriggerType
+    RawTriggerType,
+    BlockRangeKind,
+    BlockRange
 } from "lib/sim-idx-sol/src/Triggers.sol";
 import {Triggers} from "src/Main.sol";
 
@@ -23,11 +25,8 @@ contract HookScript is Script {
     function run(string calldata outputFile) public {
         vm.startBroadcast();
 
-        (
-            AbiTarget[] memory abiTargets,
-            ContractTarget[] memory contractTargets,
-            GlobalTarget[] memory globalTargets
-        ) = listener.getSimTargets();
+        (AbiTarget[] memory abiTargets, ContractTarget[] memory contractTargets, GlobalTarget[] memory globalTargets) =
+            listener.getSimTargets();
 
         string[] memory serializedAbiTargets = serializeAbiTarget(abiTargets);
         string[] memory serializedContractTargets = serializeContractTarget(contractTargets);
@@ -45,7 +44,7 @@ contract HookScript is Script {
     function serializeContractTarget(ContractTarget[] memory target) internal returns (string[] memory) {
         string[] memory serializedTargets = new string[](target.length);
         for (uint256 i = 0; i < target.length; i++) {
-            string memory objectKey = "target";
+            string memory objectKey = "contract_target";
             vm.serializeUint(objectKey, "chain_id", target[i].targetContract.chainId);
             vm.serializeString(objectKey, "abi_name", target[i].trigger.abiName);
             vm.serializeAddress(objectKey, "target_contract", target[i].targetContract.contractAddress);
@@ -54,6 +53,9 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "target_type", "contract");
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
+            BlockRange memory blockRange = target[i].blockRange;
+            serializeBlockRange(objectKey, blockRange);
+
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
         return serializedTargets;
@@ -62,7 +64,7 @@ contract HookScript is Script {
     function serializeAbiTarget(AbiTarget[] memory target) internal returns (string[] memory) {
         string[] memory serializedTargets = new string[](target.length);
         for (uint256 i = 0; i < target.length; i++) {
-            string memory objectKey = "target";
+            string memory objectKey = "abi_target";
             vm.serializeUint(objectKey, "chain_id", target[i].targetAbi.chainId);
             vm.serializeString(objectKey, "abi_name", target[i].targetAbi.abi.name);
             bytes memory functionSelector = abi.encode(target[i].trigger.selector);
@@ -70,6 +72,9 @@ contract HookScript is Script {
             vm.serializeString(objectKey, "target_type", "abi");
             vm.serializeString(objectKey, "trigger_type", target[i].trigger.triggerType.toString());
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].trigger.listenerCodehash);
+            BlockRange memory blockRange = target[i].blockRange;
+            serializeBlockRange(objectKey, blockRange);
+
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
         return serializedTargets;
@@ -80,12 +85,25 @@ contract HookScript is Script {
         for (uint256 i = 0; i < target.length; i++) {
             string memory objectKey = "generic_target";
             vm.serializeString(objectKey, "trigger_type", target[i].triggerType.toString());
-            vm.serializeUint(objectKey, "chain_id", target[i].chainId.chainId);
+            vm.serializeUint(objectKey, "chain_id", target[i].chainId);
             vm.serializeString(objectKey, "target_type", "global");
             vm.serializeBytes32(objectKey, "listener_codehash", target[i].listenerCodehash);
+            BlockRange memory blockRange = target[i].blockRange;
+            serializeBlockRange(objectKey, blockRange);
+
             serializedTargets[i] = vm.serializeBytes32(objectKey, "handler_selector", target[i].handlerSelector);
         }
         return serializedTargets;
+    }
+
+    function serializeBlockRange(string memory objectKey, BlockRange memory range) internal {
+        string memory rangeKey = string.concat(objectKey, "_range");
+
+        vm.serializeUint(rangeKey, "start_block", range.startBlockInclusive);
+        vm.serializeUint(rangeKey, "end_block", range.endBlockInclusive);
+        string memory blockRangeJson = vm.serializeString(rangeKey, "kind", BlockRangeLib.toString(range.kind));
+
+        vm.serializeString(objectKey, "block_range", blockRangeJson);
     }
 
     function concat(string[] memory a, string[] memory b) internal pure returns (string[] memory) {
@@ -142,3 +160,17 @@ library CustomTriggerTypeLib {
 
 using CustomTriggerTypeLib for TriggerType;
 using CustomTriggerTypeLib for RawTriggerType;
+
+library BlockRangeLib {
+    function toString(BlockRangeKind kind) internal pure returns (string memory) {
+        if (kind == BlockRangeKind.RangeFull) {
+            return "range_full";
+        } else if (kind == BlockRangeKind.RangeInclusive) {
+            return "range_inclusive";
+        } else if (kind == BlockRangeKind.RangeFrom) {
+            return "range_from";
+        } else {
+            revert("Invalid block range kind");
+        }
+    }
+}

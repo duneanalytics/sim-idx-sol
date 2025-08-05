@@ -4,3 +4,4 @@ pragma solidity ^0.8.13;
 import "./Context.sol";
 import "./RawTriggers.sol";
 import "./Triggers.sol";
+import "./ProtocolTriggers.sol";

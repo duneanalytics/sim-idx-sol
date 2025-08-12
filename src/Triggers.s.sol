@@ -9,16 +9,17 @@ import {
     TriggerType,
     RawTriggerType,
     BlockRangeKind,
-    BlockRange
+    BlockRange,
+    BaseTriggers
 } from "lib/sim-idx-sol/src/Triggers.sol";
-import {Triggers} from "src/Main.sol";
+
 
 // TODO: This script should be hidden from the user
 contract HookScript is Script {
-    Triggers listener;
+    BaseTriggers listener;
 
     function setUp() public {
-        listener = new Triggers();
+        listener = BaseTriggers(deployCode("Triggers"));
         listener.triggers();
     }
 

@@ -51,7 +51,8 @@ enum Chains {
     Zora,               // 7777777
     BOB,                // 60808
     Soneium,            // 1868
-    Shape               // 360
+    Shape,              // 360
+    Arbitrum            // 42161
 }
 
 function chainToChainId(Chains chain) pure returns (uint256) {
@@ -67,6 +68,7 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     if (chain == Chains.BOB) return 60808;
     if (chain == Chains.Soneium) return 1868;
     if (chain == Chains.Shape) return 360;
+    if (chain == Chains.Arbitrum) return 42161;
     revert("Unsupported chain");
 }
 

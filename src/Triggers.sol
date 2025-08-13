@@ -2,9 +2,10 @@
 pragma solidity ^0.8.13;
 
 enum BlockRangeKind {
-    RangeInclusive,    // Blocks from inclusive start to inclusive end   
-    RangeFrom,         // Blocks from inclusive start to unbounded end         
-    RangeFull          // All blocks from earliest available to unbounded end                
+    RangeInclusive, // Blocks from inclusive start to inclusive end
+    RangeFrom, // Blocks from inclusive start to unbounded end
+    RangeFull // All blocks from earliest available to unbounded end
+
 }
 
 struct BlockRange {
@@ -15,10 +16,15 @@ struct BlockRange {
 
 library BlockRangeLib {
     function withStartBlock(uint64 startBlockInclusive) internal pure returns (BlockRange memory) {
-        return BlockRange({kind: BlockRangeKind.RangeFrom, startBlockInclusive: startBlockInclusive, endBlockInclusive: 0});
+        return
+            BlockRange({kind: BlockRangeKind.RangeFrom, startBlockInclusive: startBlockInclusive, endBlockInclusive: 0});
     }
 
-    function withEndBlock(BlockRange memory range, uint64 endBlockInclusive) internal pure returns (BlockRange memory) {
+    function withEndBlock(BlockRange memory range, uint64 endBlockInclusive)
+        internal
+        pure
+        returns (BlockRange memory)
+    {
         range.endBlockInclusive = endBlockInclusive;
         range.kind = BlockRangeKind.RangeInclusive;
         return range;
@@ -85,22 +91,22 @@ library ChainsLib {
         });
     }
 
-    function withEndBlock(ChainWithRange memory chain, uint64 endBlockInclusive) internal pure returns (ChainWithRange memory) {
+    function withEndBlock(ChainWithRange memory chain, uint64 endBlockInclusive)
+        internal
+        pure
+        returns (ChainWithRange memory)
+    {
         chain.blockRange = BlockRangeLib.withEndBlock(chain.blockRange, endBlockInclusive);
         return chain;
     }
 
     function withBlockRange(Chains chain, BlockRange memory range) internal pure returns (ChainWithRange memory) {
-        return ChainWithRange({
-            chainId: chainToChainId(chain),
-            blockRange: range
-        });
+        return ChainWithRange({chainId: chainToChainId(chain), blockRange: range});
     }
 }
 
 using ChainsLib for Chains global;
 using ChainsLib for ChainWithRange global;
-
 
 enum TriggerType {
     FUNCTION,
@@ -157,7 +163,11 @@ library ChainContractLibrary {
 using ChainContractLibrary for ChainIdContract global;
 
 function chainContract(Chains chain, address contractAddress) pure returns (ChainIdContract memory) {
-    return ChainIdContract({chainId: chainToChainId(chain), contractAddress: contractAddress, blockRange: blockRangeFull()});
+    return ChainIdContract({
+        chainId: chainToChainId(chain),
+        contractAddress: contractAddress,
+        blockRange: blockRangeFull()
+    });
 }
 
 function chainContract(ChainWithRange memory chain, address contractAddress) pure returns (ChainIdContract memory) {

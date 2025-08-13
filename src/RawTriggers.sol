@@ -5,7 +5,7 @@ import {RawTriggerType, RawTrigger} from "./Triggers.sol";
 import {RawCallContext, RawPreCallContext, RawBlockContext, RawLogContext} from "./Context.sol";
 
 abstract contract Raw$OnCall {
-    function onCall(RawCallContext memory ctx) virtual external;
+    function onCall(RawCallContext memory ctx) external virtual;
 
     function triggerOnCall() external view returns (RawTrigger memory) {
         return RawTrigger({
@@ -17,7 +17,7 @@ abstract contract Raw$OnCall {
 }
 
 abstract contract Raw$OnPreCall {
-    function onPreCall(RawPreCallContext memory ctx) virtual external;
+    function onPreCall(RawPreCallContext memory ctx) external virtual;
 
     function triggerOnPreCall() external view returns (RawTrigger memory) {
         return RawTrigger({

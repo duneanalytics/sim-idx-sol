@@ -11,11 +11,9 @@ interface ArbSys {
     function arbBlockNumber() external view returns (uint256);
 }
 
-library EnvLib {
-    ArbSys constant ARB_SYS_ADDRESS = ArbSys(0x0000000000000000000000000000000000000064);
+ArbSys constant ARB_SYS_ADDRESS = ArbSys(0x0000000000000000000000000000000000000064);
 
-    function blockNumber() internal view returns (uint64) {
-        if (block.chainid == chainToChainId(Chains.Arbitrum)) return uint64(ARB_SYS_ADDRESS.arbBlockNumber());
-        return uint64(block.number);
-    }
+function blockNumber() view returns (uint64) {
+    if (block.chainid == chainToChainId(Chains.Arbitrum)) return uint64(ARB_SYS_ADDRESS.arbBlockNumber());
+    return uint64(block.number);
 }

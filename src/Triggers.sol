@@ -59,7 +59,8 @@ enum Chains {
     Soneium, // 1868
     Shape, // 360
     Arbitrum, // 42161
-    Optimism // 10
+    Optimism, // 10
+    B3 // 8333
 }
 
 function chainToChainId(Chains chain) pure returns (uint256) {
@@ -77,6 +78,7 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     if (chain == Chains.Shape) return 360;
     if (chain == Chains.Arbitrum) return 42161;
     if (chain == Chains.Optimism) return 10;
+    if (chain == Chains.B3) return 8333;
     revert("Unsupported chain");
 }
 

@@ -76,7 +76,7 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     if (chain == Chains.Soneium) return 1868;
     if (chain == Chains.Shape) return 360;
     if (chain == Chains.Arbitrum) return 42161;
-    if (chain == chains.Optimism) return 10;
+    if (chain == Chains.Optimism) return 10;
     revert("Unsupported chain");
 }
 

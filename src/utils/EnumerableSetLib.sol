@@ -220,6 +220,7 @@ library EnumerableSetLib {
 
     /// @dev Returns whether `value` is in the set.
     function contains(Int256Set storage set, int256 value) internal view returns (bool result) {
+        // forge-lint: disable-next-line(unsafe-typecast)
         result = contains(_toBytes32Set(set), bytes32(uint256(value)));
     }
 
@@ -359,6 +360,7 @@ library EnumerableSetLib {
 
     /// @dev Adds `value` to the set. Returns whether `value` was not in the set.
     function add(Int256Set storage set, int256 value) internal returns (bool result) {
+        // forge-lint: disable-next-line(unsafe-typecast)
         result = add(_toBytes32Set(set), bytes32(uint256(value)));
     }
 
@@ -514,6 +516,7 @@ library EnumerableSetLib {
 
     /// @dev Removes `value` from the set. Returns whether `value` was in the set.
     function remove(Int256Set storage set, int256 value) internal returns (bool result) {
+        // forge-lint: disable-next-line(unsafe-typecast)
         result = remove(_toBytes32Set(set), bytes32(uint256(value)));
     }
 

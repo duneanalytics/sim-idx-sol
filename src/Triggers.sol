@@ -6,7 +6,6 @@ import "./libs/Chains.sol";
 import "./libs/ChainContract.sol";
 import "./libs/Abi.sol";
 import "./libs/ChainGlobal.sol";
-import "./libs/NativeToken.sol";
 
 /// @notice Creates a full range covering all blocks
 /// @return A BlockRange configured to cover all available blocks

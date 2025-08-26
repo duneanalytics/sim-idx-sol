@@ -6,3 +6,5 @@ import "./RawTriggers.sol";
 import "./Triggers.sol";
 import "./ProtocolTriggers.sol";
 import "./Env.sol";
+import "./libs/NativeToken.sol";
+import "./utils/ERC20Metadata.sol";

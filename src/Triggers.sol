@@ -506,7 +506,7 @@ abstract contract BaseTriggers {
 
     /// @notice Returns all configured trigger targets
     /// @return abiTargets Array of ABI-based trigger targets
-    /// @return contractTargets Array of contract-specific trigger targets  
+    /// @return contractTargets Array of contract-specific trigger targets
     /// @return globalTargets Array of global trigger targets
     /// @dev Used by the indexing system to retrieve all configured triggers
     function getSimTargets()

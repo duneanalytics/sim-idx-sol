@@ -43,35 +43,27 @@ struct CallFrame {
     /// @notice Function that returns the address of the currently executing contract
     /// @dev The contract whose code is currently being executed
     function () external returns (address) callee;
-    
     /// @notice Function that returns the address that initiated the current call
     /// @dev Could be an EOA or another contract
     function () external returns (address) caller;
-    
     /// @notice Function that returns the address that delegated the current call
     /// @dev Relevant for proxy patterns where execution is delegated
     function () external returns (address) delegator;
-    
     /// @notice Function that returns the address of the implementation contract
     /// @dev The contract that contains the actual implementation code
     function () external returns (address) delegatee;
-    
     /// @notice Function that returns the calldata for the current call
     /// @dev The input data sent with the transaction or call
     function () external returns (bytes memory) callData;
-    
     /// @notice Function that returns the current call depth
     /// @dev How many levels deep the current call is in the call stack
     function () external returns (uint256) callDepth;
-    
     /// @notice Function that returns the value transferred with the call
     /// @dev Amount of wei sent with the call
     function () external returns (uint256) value;
-    
     /// @notice Function that returns the type of the current call
     /// @dev One of the CallType enum values
     function () external returns (CallType) callType;
-    
     /// @notice The method used to verify this contract for indexing
     /// @dev Determines how the contract's functionality was identified
     ContractVerificationSource verificationSource;
@@ -83,15 +75,12 @@ struct TransactionContext {
     /// @notice The current execution frame context
     /// @dev Detailed information about the current call being executed
     CallFrame call;
-    
     /// @notice Function that returns whether the transaction succeeded
     /// @dev True if the transaction completed without reverting
     function () external returns (bool) isSuccessful;
-    
     /// @notice Function that returns the transaction hash
     /// @dev The unique identifier for this transaction
     function () external returns (bytes32) hash;
-    
     /// @notice The blockchain network identifier
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
@@ -123,11 +112,9 @@ struct PreFunctionContext {
 struct RawCallContext {
     /// @notice The complete transaction context
     TransactionContext txn;
-    
     /// @notice Function that returns the raw calldata
     /// @dev The complete input data for the call
     function () external returns (bytes memory) callData;
-    
     /// @notice Function that returns the raw return data
     /// @dev The complete output data from the call
     function () external returns (bytes memory) returnData;
@@ -138,7 +125,6 @@ struct RawCallContext {
 struct RawPreCallContext {
     /// @notice The complete transaction context
     TransactionContext txn;
-    
     /// @notice Function that returns the raw calldata
     /// @dev The complete input data for the upcoming call
     function () external returns (bytes memory) callData;
@@ -149,11 +135,9 @@ struct RawPreCallContext {
 struct RawLogContext {
     /// @notice The complete transaction context
     TransactionContext txn;
-    
     /// @notice Function that returns the log topics
     /// @dev Array of indexed event parameters (topics 0-3)
     function () external returns (bytes32[] memory) topics;
-    
     /// @notice Function that returns the log data
     /// @dev The non-indexed event data
     function () external returns (bytes memory) data;

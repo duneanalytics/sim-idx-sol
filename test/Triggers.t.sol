@@ -28,7 +28,6 @@ import {
 } from "../src/Triggers.sol";
 
 contract TriggersTest is Test {
-    
     function setUp() public {}
 
     function test_blockRangeFrom() public pure {
@@ -45,7 +44,7 @@ contract TriggersTest is Test {
         assertEq(range.endBlockInclusive, 200);
     }
 
-    function test_blockRangeFull() public pure  {
+    function test_blockRangeFull() public pure {
         BlockRange memory range = blockRangeFull();
         assertEq(uint256(range.kind), uint256(BlockRangeKind.RangeFull));
         assertEq(range.startBlockInclusive, 0);

@@ -1,56 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-/// @notice Enumeration of block range types
-/// @dev Defines how block ranges are interpreted for trigger activation
-enum BlockRangeKind {
-    /// @dev Blocks from inclusive start to inclusive end
-    RangeInclusive,
-    /// @dev Blocks from inclusive start to unbounded end
-    RangeFrom,
-    /// @dev All blocks from earliest available to unbounded end
-    RangeFull
-}
-
-/// @notice Represents a range of blocks for trigger activation
-/// @dev Flexible block range specification supporting different range types
-struct BlockRange {
-    /// @notice The type of block range
-    BlockRangeKind kind;
-    /// @notice Starting block number (inclusive)
-    uint64 startBlockInclusive;
-    /// @notice Ending block number (inclusive, 0 if unbounded)
-    uint64 endBlockInclusive;
-}
-
-/// @title Block Range Library
-/// @notice Utility functions for creating and manipulating block ranges
-/// @dev Provides fluent API for block range configuration
-library BlockRangeLib {
-    /// @notice Creates a block range starting from a specific block
-    /// @param startBlockInclusive The starting block number (inclusive)
-    /// @return A BlockRange configured as RangeFrom
-    function withStartBlock(uint64 startBlockInclusive) internal pure returns (BlockRange memory) {
-        return
-            BlockRange({kind: BlockRangeKind.RangeFrom, startBlockInclusive: startBlockInclusive, endBlockInclusive: 0});
-    }
-
-    /// @notice Adds an end block to an existing range, converting it to RangeInclusive
-    /// @param range The existing block range to modify
-    /// @param endBlockInclusive The ending block number (inclusive)
-    /// @return The modified BlockRange with kind set to RangeInclusive
-    function withEndBlock(BlockRange memory range, uint64 endBlockInclusive)
-        internal
-        pure
-        returns (BlockRange memory)
-    {
-        range.endBlockInclusive = endBlockInclusive;
-        range.kind = BlockRangeKind.RangeInclusive;
-        return range;
-    }
-}
-
-using BlockRangeLib for BlockRange global;
+import "./libs/BlockRange.sol";
+import "./libs/Chains.sol";
+import "./libs/ChainContract.sol";
+import "./libs/Abi.sol";
+import "./libs/ChainGlobal.sol";
 
 /// @notice Creates a full range covering all blocks
 /// @return A BlockRange configured to cover all available blocks
@@ -72,110 +27,6 @@ function blockRangeFrom(uint64 startBlockInclusive) pure returns (BlockRange mem
 function blockRangeInclusive(uint64 startBlockInclusive, uint64 endBlockInclusive) pure returns (BlockRange memory) {
     return BlockRangeLib.withStartBlock(startBlockInclusive).withEndBlock(endBlockInclusive);
 }
-
-/// @notice Enumeration of supported blockchain networks
-/// @dev Maps to actual chain IDs as defined in EIP-155
-enum Chains {
-    /// @dev Ethereum Mainnet (Chain ID: 1)
-    Ethereum,
-    /// @dev Ethereum Sepolia Testnet (Chain ID: 11155111)
-    EthereumSepolia,
-    /// @dev Base Mainnet (Chain ID: 8453)
-    Base,
-    /// @dev Base Sepolia Testnet (Chain ID: 84532)
-    BaseSepolia,
-    /// @dev World Chain (Chain ID: 480)
-    WorldChain,
-    /// @dev Mode Network (Chain ID: 34443)
-    Mode,
-    /// @dev Ink Protocol (Chain ID: 57073)
-    Ink,
-    /// @dev Unichain (Chain ID: 130)
-    Unichain,
-    /// @dev Zora Network (Chain ID: 7777777)
-    Zora,
-    /// @dev BOB Network (Chain ID: 60808)
-    BOB,
-    /// @dev Soneium Network (Chain ID: 1868)
-    Soneium,
-    /// @dev Shape Network (Chain ID: 360)
-    Shape,
-    /// @dev Arbitrum One (Chain ID: 42161)
-    Arbitrum,
-    /// @dev Optimism Mainnet (Chain ID: 10)
-    Optimism
-}
-
-/// @notice Maps a Chains enum value to its corresponding EIP-155 chain ID
-/// @param chain The blockchain network enum value
-/// @return The numeric chain ID as defined in EIP-155
-/// @dev Reverts with "Unsupported chain" for unknown chain values
-function chainToChainId(Chains chain) pure returns (uint256) {
-    if (chain == Chains.Ethereum) return 1;
-    if (chain == Chains.EthereumSepolia) return 11155111;
-    if (chain == Chains.Base) return 8453;
-    if (chain == Chains.BaseSepolia) return 84532;
-    if (chain == Chains.WorldChain) return 480;
-    if (chain == Chains.Mode) return 34443;
-    if (chain == Chains.Ink) return 57073;
-    if (chain == Chains.Unichain) return 130;
-    if (chain == Chains.Zora) return 7777777;
-    if (chain == Chains.BOB) return 60808;
-    if (chain == Chains.Soneium) return 1868;
-    if (chain == Chains.Shape) return 360;
-    if (chain == Chains.Arbitrum) return 42161;
-    if (chain == Chains.Optimism) return 10;
-    revert("Unsupported chain");
-}
-
-/// @notice Represents a blockchain network with an associated block range
-/// @dev Combines chain identification with block range specification
-struct ChainWithRange {
-    /// @notice The EIP-155 chain ID
-    uint256 chainId;
-    /// @notice The block range for this chain configuration
-    BlockRange blockRange;
-}
-
-/// @title Chains Library
-/// @notice Utility functions for creating chain configurations with block ranges
-/// @dev Provides fluent API for chain and block range configuration
-library ChainsLib {
-    /// @notice Creates a chain configuration with a starting block
-    /// @param chain The blockchain network
-    /// @param startBlockInclusive The starting block number (inclusive)
-    /// @return A ChainWithRange configured from the specified block
-    function withStartBlock(Chains chain, uint64 startBlockInclusive) internal pure returns (ChainWithRange memory) {
-        return ChainWithRange({
-            chainId: chainToChainId(chain),
-            blockRange: BlockRangeLib.withStartBlock(startBlockInclusive)
-        });
-    }
-
-    /// @notice Adds an end block to an existing chain configuration
-    /// @param chain The existing chain configuration to modify
-    /// @param endBlockInclusive The ending block number (inclusive)
-    /// @return The modified ChainWithRange with an inclusive range
-    function withEndBlock(ChainWithRange memory chain, uint64 endBlockInclusive)
-        internal
-        pure
-        returns (ChainWithRange memory)
-    {
-        chain.blockRange = BlockRangeLib.withEndBlock(chain.blockRange, endBlockInclusive);
-        return chain;
-    }
-
-    /// @notice Creates a chain configuration with a specific block range
-    /// @param chain The blockchain network
-    /// @param range The block range to apply
-    /// @return A ChainWithRange with the specified range
-    function withBlockRange(Chains chain, BlockRange memory range) internal pure returns (ChainWithRange memory) {
-        return ChainWithRange({chainId: chainToChainId(chain), blockRange: range});
-    }
-}
-
-using ChainsLib for Chains global;
-using ChainsLib for ChainWithRange global;
 
 /// @notice Enumeration of high-level trigger types
 /// @dev Used for ABI-based triggers that understand contract semantics
@@ -242,30 +93,6 @@ struct ContractTarget {
     BlockRange blockRange;
 }
 
-/// @notice Represents a contract on a specific blockchain
-/// @dev Combines chain ID, contract address, and block range
-struct ChainIdContract {
-    /// @notice The EIP-155 chain ID
-    uint256 chainId;
-    /// @notice The contract address on the specified chain
-    address contractAddress;
-    /// @notice The block range for monitoring this contract
-    BlockRange blockRange;
-}
-
-library ChainContractLibrary {
-    function withBlockRange(ChainIdContract memory chain, BlockRange memory newBlockRange)
-        internal
-        pure
-        returns (ChainIdContract memory)
-    {
-        chain.blockRange = newBlockRange;
-        return chain;
-    }
-}
-
-using ChainContractLibrary for ChainIdContract global;
-
 /// @notice Creates a ChainIdContract for a specific chain and contract address
 /// @param chain The blockchain network
 /// @param contractAddress The contract address on the specified chain
@@ -286,13 +113,6 @@ function chainContract(ChainWithRange memory chain, address contractAddress) pur
     return ChainIdContract({chainId: chain.chainId, contractAddress: contractAddress, blockRange: chain.blockRange});
 }
 
-/// @notice Represents an Application Binary Interface definition
-/// @dev Simple container for ABI identification
-struct Abi {
-    /// @notice The name of the ABI (e.g., "ERC20", "UniswapV3Pool")
-    string name;
-}
-
 /// @notice Represents a trigger target for contracts matching an ABI
 /// @dev Used for targeting multiple contracts that implement the same ABI
 struct AbiTarget {
@@ -305,17 +125,6 @@ struct AbiTarget {
     /// @notice Code hash of the listener contract (duplicated for efficiency)
     bytes32 listenerCodehash;
     /// @notice Block range for this trigger target
-    BlockRange blockRange;
-}
-
-/// @notice Represents an ABI configuration for a specific blockchain
-/// @dev Combines chain ID, ABI definition, and block range
-struct ChainIdAbi {
-    /// @notice The EIP-155 chain ID
-    uint256 chainId;
-    /// @notice The ABI definition
-    Abi abi;
-    /// @notice The block range for monitoring contracts with this ABI
     BlockRange blockRange;
 }
 
@@ -335,28 +144,6 @@ function chainAbi(ChainWithRange memory chain, Abi memory abiData) pure returns 
     return ChainIdAbi({chainId: chain.chainId, abi: abiData, blockRange: chain.blockRange});
 }
 
-library AbiLibrary {
-    function withBlockRange(ChainIdAbi memory chain, BlockRange memory newBlockRange)
-        internal
-        pure
-        returns (ChainIdAbi memory)
-    {
-        chain.blockRange = newBlockRange;
-        return chain;
-    }
-}
-
-using AbiLibrary for ChainIdAbi global;
-
-/// @notice Represents a global trigger configuration for a specific blockchain
-/// @dev Used for chain-wide triggers that don't target specific contracts or ABIs
-struct ChainIdGlobal {
-    /// @notice The EIP-155 chain ID
-    uint256 chainId;
-    /// @notice The block range for this global configuration
-    BlockRange blockRange;
-}
-
 /// @notice Creates a ChainIdGlobal for a specific chain
 /// @param chain The blockchain network
 /// @return A ChainIdGlobal with full block range coverage
@@ -370,19 +157,6 @@ function chainGlobal(Chains chain) pure returns (ChainIdGlobal memory) {
 function chainGlobal(ChainWithRange memory chain) pure returns (ChainIdGlobal memory) {
     return ChainIdGlobal({chainId: chain.chainId, blockRange: chain.blockRange});
 }
-
-library ChainGlobalLibrary {
-    function withBlockRange(ChainIdGlobal memory chainId, BlockRange memory newBlockRange)
-        internal
-        pure
-        returns (ChainIdGlobal memory)
-    {
-        chainId.blockRange = newBlockRange;
-        return chainId;
-    }
-}
-
-using ChainGlobalLibrary for ChainIdGlobal global;
 
 struct CustomTriggerContractTarget {
     ChainIdContract targetContract;

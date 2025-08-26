@@ -3,13 +3,13 @@ pragma solidity ^0.8.13;
 
 import "./Chains.sol";
 
-using NativeTokenLib for NativeToken global;
-
 struct NativeToken {
     string name;
     string symbol;
     uint8 decimals;
 }
+
+using NativeTokenLib for NativeToken global;
 
 library NativeTokenLib {
     /// @notice Creates a native token for a given chain ID

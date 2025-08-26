@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-using BlockRangeLib for BlockRange global;
-
 /// @notice Enumeration of block range types
 /// @dev Defines how block ranges are interpreted for trigger activation
 enum BlockRangeKind {
@@ -24,6 +22,8 @@ struct BlockRange {
     /// @notice Ending block number (inclusive, 0 if unbounded)
     uint64 endBlockInclusive;
 }
+
+using BlockRangeLib for BlockRange global;
 
 /// @title Block Range Library
 /// @notice Utility functions for creating and manipulating block ranges

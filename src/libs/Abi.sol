@@ -3,8 +3,6 @@ pragma solidity ^0.8.13;
 
 import "./BlockRange.sol";
 
-using AbiLibrary for ChainIdAbi global;
-
 /// @notice Represents an Application Binary Interface definition
 /// @dev Simple container for ABI identification
 struct Abi {
@@ -22,6 +20,8 @@ struct ChainIdAbi {
     /// @notice The block range for monitoring contracts with this ABI
     BlockRange blockRange;
 }
+
+using AbiLibrary for ChainIdAbi global;
 
 library AbiLibrary {
     function withBlockRange(ChainIdAbi memory chain, BlockRange memory newBlockRange)

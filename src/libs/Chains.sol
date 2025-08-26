@@ -3,9 +3,6 @@ pragma solidity ^0.8.13;
 
 import "./BlockRange.sol";
 
-using ChainsLib for Chains global;
-using ChainsLib for ChainWithRange global;
-
 /// @notice Enumeration of supported blockchain networks
 /// @dev Maps to actual chain IDs as defined in EIP-155
 enum Chains {
@@ -39,6 +36,8 @@ enum Chains {
     Optimism
 }
 
+using ChainsLib for Chains global;
+
 /// @notice Maps a Chains enum value to its corresponding EIP-155 chain ID
 /// @param chain The blockchain network enum value
 /// @return The numeric chain ID as defined in EIP-155
@@ -69,6 +68,8 @@ struct ChainWithRange {
     /// @notice The block range for this chain configuration
     BlockRange blockRange;
 }
+
+using ChainsLib for ChainWithRange global;
 
 /// @title Chains Library
 /// @notice Utility functions for creating chain configurations with block ranges

@@ -17,14 +17,8 @@ import {
 contract HookScript is Script {
     BaseTriggers listener;
 
-    function run(string calldata _unused) public {
-        revert(
-            "You are using a newer version of this library than what is compatible with your CLI. Please update your CLI"
-        );
-    }
-
-    function run(string calldata outputFile, bytes calldata triggerContractBytecode) public {
-        listener = BaseTriggers(deployContract(triggerContractBytecode));
+    function run(string calldata outputFile) public {
+        listener = BaseTriggers(deployContract(vm.getCode("Main.sol:Triggers")));
         listener.triggers();
         vm.startBroadcast();
 

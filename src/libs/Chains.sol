@@ -60,6 +60,27 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     revert("Unsupported chain");
 }
 
+/// @notice Returns all supported chains
+/// @return An array of all supported chains
+function allSupportedChains() pure returns (Chains[14] memory) {
+    return [
+        Chains.Ethereum,
+        Chains.EthereumSepolia,
+        Chains.Base,
+        Chains.BaseSepolia,
+        Chains.WorldChain,
+        Chains.Mode,
+        Chains.Ink,
+        Chains.Unichain,
+        Chains.Zora,
+        Chains.BOB,
+        Chains.Soneium,
+        Chains.Shape,
+        Chains.Arbitrum,
+        Chains.Optimism
+    ];
+}
+
 /// @notice Represents a blockchain network with an associated block range
 /// @dev Combines chain identification with block range specification
 struct ChainWithRange {

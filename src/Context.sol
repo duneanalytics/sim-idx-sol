@@ -5,8 +5,8 @@ pragma solidity ^0.8.13;
 /// @notice Defines all context types and structures used for blockchain event and transaction processing
 /// @dev This file contains the core data structures used to represent execution contexts across different trigger types
 
-/// @notice Enumeration of contract verification methods
-/// @dev Used to identify how a contract's functionality was verified for indexing
+/// @notice Enumeration of contract identification methods
+/// @dev Used to identify whether a contract was identified through verified source code or bytecode analysis
 enum ContractVerificationSource {
     /// @dev No verification method specified
     Unspecified,

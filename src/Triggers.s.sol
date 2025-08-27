@@ -9,20 +9,17 @@ import {
     TriggerType,
     RawTriggerType,
     BlockRangeKind,
-    BlockRange
-} from "lib/sim-idx-sol/src/Triggers.sol";
-import {Triggers} from "src/Main.sol";
+    BlockRange,
+    BaseTriggers
+} from "./Triggers.sol";
 
 // TODO: This script should be hidden from the user
 contract HookScript is Script {
-    Triggers listener;
-
-    function setUp() public {
-        listener = new Triggers();
-        listener.triggers();
-    }
+    BaseTriggers listener;
 
     function run(string calldata outputFile) public {
+        listener = BaseTriggers(deployContract(vm.getCode("Main.sol:Triggers")));
+        listener.triggers();
         vm.startBroadcast();
 
         (AbiTarget[] memory abiTargets, ContractTarget[] memory contractTargets, GlobalTarget[] memory globalTargets) =
@@ -38,6 +35,7 @@ contract HookScript is Script {
         string memory serializedTargets = string.concat("[", commaSeparate(combined), "]");
 
         vm.writeFile(outputFile, serializedTargets);
+
         vm.stopBroadcast();
     }
 
@@ -127,6 +125,14 @@ contract HookScript is Script {
             }
         }
         return out;
+    }
+
+    function deployContract(bytes memory creationCode) internal returns (address) {
+        address addr;
+        assembly {
+            addr := create(0, add(creationCode, 0x20), mload(creationCode))
+        }
+        return addr;
     }
 }
 

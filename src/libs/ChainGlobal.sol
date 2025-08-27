@@ -3,8 +3,6 @@ pragma solidity ^0.8.13;
 
 import "./BlockRange.sol";
 
-using ChainGlobalLibrary for ChainIdGlobal global;
-
 /// @notice Represents a global trigger configuration for a specific blockchain
 /// @dev Used for chain-wide triggers that don't target specific contracts or ABIs
 struct ChainIdGlobal {
@@ -13,6 +11,8 @@ struct ChainIdGlobal {
     /// @notice The block range for this global configuration
     BlockRange blockRange;
 }
+
+using ChainGlobalLibrary for ChainIdGlobal global;
 
 library ChainGlobalLibrary {
     function withBlockRange(ChainIdGlobal memory chainId, BlockRange memory newBlockRange)

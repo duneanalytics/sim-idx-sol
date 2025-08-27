@@ -3,8 +3,6 @@ pragma solidity ^0.8.13;
 
 import "./BlockRange.sol";
 
-using ChainContractLibrary for ChainIdContract global;
-
 /// @notice Represents a contract on a specific blockchain
 /// @dev Combines chain ID, contract address, and block range
 struct ChainIdContract {
@@ -15,6 +13,8 @@ struct ChainIdContract {
     /// @notice The block range for monitoring this contract
     BlockRange blockRange;
 }
+
+using ChainContractLibrary for ChainIdContract global;
 
 library ChainContractLibrary {
     function withBlockRange(ChainIdContract memory chain, BlockRange memory newBlockRange)

@@ -26,22 +26,22 @@ contract MockOrdinalComponents {
         });
     }
 
-    function withBlockNumber(uint32 _blockNumber) internal returns (MockOrdinalComponents) {
+    function withBlockNumber(uint32 _blockNumber) external returns (MockOrdinalComponents) {
         blockNumber = _blockNumber;
         return this;
     }
 
-    function withReorgIncarnation(uint32 _reorgIncarnation) internal returns (MockOrdinalComponents) {
+    function withReorgIncarnation(uint32 _reorgIncarnation) external returns (MockOrdinalComponents) {
         reorgIncarnation = _reorgIncarnation;
         return this;
     }
 
-    function withTxnIndex(uint24 _txnIndex) internal returns (MockOrdinalComponents) {
+    function withTxnIndex(uint24 _txnIndex) external returns (MockOrdinalComponents) {
         txnIndex = _txnIndex;
         return this;
     }
 
-    function withShadowPc(uint40 _shadowPc) internal returns (MockOrdinalComponents) {
+    function withShadowPc(uint40 _shadowPc) external returns (MockOrdinalComponents) {
         shadowPc = _shadowPc;
         return this;
     }

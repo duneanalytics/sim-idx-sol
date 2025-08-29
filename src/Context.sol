@@ -60,8 +60,8 @@ library OrdinalComponentsLib {
     /// @param components The components to create the ordinal from
     /// @return The 128-bit ordinal
     function createOrdinal(OrdinalComponents memory components) internal returns (uint128) {
-        return (components.blockNumber() << 96) | (components.reorgIncarnation() << 64) | (components.txnIndex() << 40)
-            | components.shadowPc();
+        return (uint128(components.blockNumber()) << 96) | (uint128(components.reorgIncarnation()) << 64)
+            | (uint128(components.txnIndex()) << 40) | uint128(components.shadowPc());
     }
 }
 

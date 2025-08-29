@@ -39,14 +39,18 @@ enum CallType {
 
 /// @notice Uniquely identifies the location and context of blockchain events
 struct OrdinalComponents {
-    /// @notice The block number where the execution occurred
-    uint32 blockNumber;
-    /// @notice The chain reorganization state
-    uint32 reorgIncarnation;
-    /// @notice Position of the transaction in the block
-    uint24 txnIndex;
-    /// @notice Number of instructions executed
-    uint40 shadowPc;
+    /// @notice Function that returns the block number where the execution occurred
+    /// @dev The height of the block in the blockchain
+    function () external returns (uint32) blockNumber;
+    /// @notice Function that returns the chain reorganization state
+    /// @dev The reorg incarnation number for this block
+    function () external returns (uint32) reorgIncarnation;
+    /// @notice Function that returns the position of the transaction in the block
+    /// @dev Zero-based index of transaction within the block
+    function () external returns (uint24) txnIndex;
+    /// @notice Function that returns the number of instructions executed
+    /// @dev Shadow program counter value
+    function () external returns (uint40) shadowPc;
 }
 
 // Library for OrdinalComponents
@@ -55,9 +59,9 @@ library OrdinalComponentsLib {
     /// @dev The ordinal is a 128-bit value that is used to uniquely identify a blockchain event
     /// @param components The components to create the ordinal from
     /// @return The 128-bit ordinal
-    function createOrdinal(OrdinalComponents memory components) internal pure returns (uint128) {
-        return (components.blockNumber << 96) | (components.reorgIncarnation << 64) | (components.txnIndex << 40)
-            | components.shadowPc;
+    function createOrdinal(OrdinalComponents memory components) internal returns (uint128) {
+        return (components.blockNumber() << 96) | (components.reorgIncarnation() << 64) | (components.txnIndex() << 40)
+            | components.shadowPc();
     }
 }
 

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {
+    OrdinalComponents,
     FunctionContext,
     EventContext,
     CallFrame,
@@ -9,6 +10,42 @@ import {
     ContractVerificationSource,
     CallType
 } from "../Context.sol";
+
+contract MockOrdinalComponents {
+    uint32 public blockNumber;
+    uint32 public reorgIncarnation;
+    uint24 public txnIndex;
+    uint40 public shadowPc;
+
+    function mockOrdinalComponents() external view returns (OrdinalComponents memory) {
+        return OrdinalComponents({
+            blockNumber: this.blockNumber,
+            reorgIncarnation: this.reorgIncarnation,
+            txnIndex: this.txnIndex,
+            shadowPc: this.shadowPc
+        });
+    }
+
+    function withBlockNumber(uint32 _blockNumber) external returns (MockOrdinalComponents) {
+        blockNumber = _blockNumber;
+        return this;
+    }
+
+    function withReorgIncarnation(uint32 _reorgIncarnation) external returns (MockOrdinalComponents) {
+        reorgIncarnation = _reorgIncarnation;
+        return this;
+    }
+
+    function withTxnIndex(uint24 _txnIndex) external returns (MockOrdinalComponents) {
+        txnIndex = _txnIndex;
+        return this;
+    }
+
+    function withShadowPc(uint40 _shadowPc) external returns (MockOrdinalComponents) {
+        shadowPc = _shadowPc;
+        return this;
+    }
+}
 
 contract MockContexts {
     address public caller;
@@ -22,6 +59,7 @@ contract MockContexts {
     address public delegator;
     bytes32 public hash;
     bool public isSuccessful;
+    MockOrdinalComponents public ordinalComponents = new MockOrdinalComponents();
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
         return FunctionContext({txn: this.mockBaseContext()});
@@ -36,7 +74,8 @@ contract MockContexts {
             call: this.mockCallFrame(),
             hash: this.hash,
             isSuccessful: this.isSuccessful,
-            chainId: 1
+            chainId: 1,
+            ordinal: ordinalComponents.mockOrdinalComponents()
         });
     }
 

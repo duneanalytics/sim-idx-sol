@@ -37,6 +37,36 @@ enum CallType {
     UNKNOWN
 }
 
+/// @notice Uniquely identifies the location and context of blockchain events
+struct OrdinalComponents {
+    /// @notice Function that returns the block number where the execution occurred
+    /// @dev The height of the block in the blockchain
+    function () external returns (uint32) blockNumber;
+    /// @notice Function that returns the chain reorganization state
+    /// @dev The reorg incarnation number for this block
+    function () external returns (uint32) reorgIncarnation;
+    /// @notice Function that returns the position of the transaction in the block
+    /// @dev Zero-based index of transaction within the block
+    function () external returns (uint24) txnIndex;
+    /// @notice Function that returns the number of instructions executed
+    /// @dev Shadow program counter value
+    function () external returns (uint40) shadowPc;
+}
+
+// Library for OrdinalComponents
+library OrdinalComponentsLib {
+    /// @notice Creates a 128-bit ordinal from the components
+    /// @dev The ordinal is a 128-bit value that is used to uniquely identify a blockchain event
+    /// @param components The components to create the ordinal from
+    /// @return The 128-bit ordinal
+    function createOrdinal(OrdinalComponents memory components) internal returns (uint128) {
+        return (uint128(components.blockNumber()) << 96) | (uint128(components.reorgIncarnation()) << 64)
+            | (uint128(components.txnIndex()) << 40) | uint128(components.shadowPc());
+    }
+}
+
+using OrdinalComponentsLib for OrdinalComponents global;
+
 /// @notice Represents the execution frame of a contract call
 /// @dev Contains all relevant information about the current execution context including call hierarchy
 struct CallFrame {
@@ -84,6 +114,9 @@ struct TransactionContext {
     /// @notice The blockchain network identifier
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
+    /// @notice The ordinal of the current block
+    /// @dev The ordinal of the current block
+    OrdinalComponents ordinal;
 }
 
 /// @notice Context provided to function-based triggers

@@ -11,6 +11,42 @@ import {
     CallType
 } from "../Context.sol";
 
+contract MockOrdinalComponents {
+    uint32 public blockNumber;
+    uint32 public reorgIncarnation;
+    uint24 public txnIndex;
+    uint40 public shadowPc;
+
+    function mockOrdinalComponents() external view returns (OrdinalComponents memory) {
+        return OrdinalComponents({
+            blockNumber: this.blockNumber,
+            reorgIncarnation: this.reorgIncarnation,
+            txnIndex: this.txnIndex,
+            shadowPc: this.shadowPc
+        });
+    }
+
+    function withBlockNumber(uint32 _blockNumber) internal returns (MockOrdinalComponents) {
+        blockNumber = _blockNumber;
+        return this;
+    }
+
+    function withReorgIncarnation(uint32 _reorgIncarnation) internal returns (MockOrdinalComponents) {
+        reorgIncarnation = _reorgIncarnation;
+        return this;
+    }
+
+    function withTxnIndex(uint24 _txnIndex) internal returns (MockOrdinalComponents) {
+        txnIndex = _txnIndex;
+        return this;
+    }
+
+    function withShadowPc(uint40 _shadowPc) internal returns (MockOrdinalComponents) {
+        shadowPc = _shadowPc;
+        return this;
+    }
+}
+
 contract MockContexts {
     address public caller;
     address public callee;
@@ -23,6 +59,7 @@ contract MockContexts {
     address public delegator;
     bytes32 public hash;
     bool public isSuccessful;
+    MockOrdinalComponents public ordinalComponents = new MockOrdinalComponents();
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
         return FunctionContext({txn: this.mockBaseContext()});
@@ -38,12 +75,8 @@ contract MockContexts {
             hash: this.hash,
             isSuccessful: this.isSuccessful,
             chainId: 1,
-            ordinal: this.mockOrdinalComponents()
+            ordinal: ordinalComponents.mockOrdinalComponents()
         });
-    }
-
-    function mockOrdinalComponents() external view returns (OrdinalComponents memory) {
-        return OrdinalComponents({blockNumber: 1, reorgIncarnation: 1, txnIndex: 1, shadowPc: 1});
     }
 
     function mockCallFrame() external view returns (CallFrame memory) {

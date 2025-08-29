@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {
+    OrdinalComponents,
     FunctionContext,
     EventContext,
     CallFrame,
@@ -36,8 +37,13 @@ contract MockContexts {
             call: this.mockCallFrame(),
             hash: this.hash,
             isSuccessful: this.isSuccessful,
-            chainId: 1
+            chainId: 1,
+            ordinal: this.mockOrdinalComponents()
         });
+    }
+
+    function mockOrdinalComponents() external view returns (OrdinalComponents memory) {
+        return OrdinalComponents({blockNumber: 1, reorgIncarnation: 1, txnIndex: 1, shadowPc: 1});
     }
 
     function mockCallFrame() external view returns (CallFrame memory) {

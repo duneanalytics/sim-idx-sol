@@ -37,6 +37,32 @@ enum CallType {
     UNKNOWN
 }
 
+/// @notice Uniquely identifies the location and context of blockchain events
+struct OrdinalComponents {
+    /// @notice The block number where the execution occurred
+    uint32 blockNumber;
+    /// @notice The chain reorganization state
+    uint32 reorgIncarnation;
+    /// @notice Position of the transaction in the block
+    uint24 txnIndex;
+    /// @notice Number of instructions executed
+    uint40 shadowPc;
+}
+
+// Library for OrdinalComponents
+library OrdinalComponentsLib {
+    /// @notice Creates a 128-bit ordinal from the components
+    /// @dev The ordinal is a 128-bit value that is used to uniquely identify a blockchain event
+    /// @param components The components to create the ordinal from
+    /// @return The 128-bit ordinal
+    function createOrdinal(OrdinalComponents memory components) internal pure returns (uint128) {
+        return (components.blockNumber << 96) | (components.reorgIncarnation << 64) | (components.txnIndex << 40)
+            | components.shadowPc;
+    }
+}
+
+using OrdinalComponentsLib for OrdinalComponents global;
+
 /// @notice Represents the execution frame of a contract call
 /// @dev Contains all relevant information about the current execution context including call hierarchy
 struct CallFrame {
@@ -84,6 +110,9 @@ struct TransactionContext {
     /// @notice The blockchain network identifier
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
+    /// @notice The ordinal of the current block
+    /// @dev The ordinal of the current block
+    OrdinalComponents ordinal;
 }
 
 /// @notice Context provided to function-based triggers

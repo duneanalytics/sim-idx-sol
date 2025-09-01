@@ -37,16 +37,16 @@ enum CallType {
     UNKNOWN
 }
 
-/// @notice Uniquely identifies the location and context of blockchain events
+/// @notice Allows ordering of the blockchain events
 struct OrdinalComponents {
     /// @notice Function that returns the block number where the execution occurred
     /// @dev The height of the block in the blockchain
     function () external returns (uint32) blockNumber;
     /// @notice Function that returns the chain reorganization state
-    /// @dev The reorg incarnation number for this block
+    /// @dev The reorg incarnation number
     function () external returns (uint32) reorgIncarnation;
     /// @notice Function that returns the position of the transaction in the block
-    /// @dev Zero-based index of transaction within the block
+    /// @dev Index of transaction within the block
     function () external returns (uint24) txnIndex;
     /// @notice Function that returns the number of instructions executed
     /// @dev Shadow program counter value
@@ -56,7 +56,7 @@ struct OrdinalComponents {
 // Library for OrdinalComponents
 library OrdinalComponentsLib {
     /// @notice Creates a 128-bit ordinal from the components
-    /// @dev The ordinal is a 128-bit value that is used to uniquely identify a blockchain event
+    /// @dev The ordinal is a 128-bit value that is used to uniquely identify and order blockchain events
     /// @param components The components to create the ordinal from
     /// @return The 128-bit ordinal
     function createOrdinal(OrdinalComponents memory components) internal returns (uint128) {
@@ -114,8 +114,8 @@ struct TransactionContext {
     /// @notice The blockchain network identifier
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
-    /// @notice The ordinal of the current block
-    /// @dev The ordinal of the current block
+    /// @notice The ordinal of the current execution
+    /// @dev The ordinal of the current execution
     OrdinalComponents ordinal;
 }
 

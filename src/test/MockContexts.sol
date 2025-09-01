@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {
-    OrdinalComponents,
+    Ordinal,
     FunctionContext,
     EventContext,
     CallFrame,
@@ -12,37 +12,14 @@ import {
 } from "../Context.sol";
 
 contract MockOrdinalComponents {
-    uint32 public blockNumber;
-    uint32 public reorgIncarnation;
-    uint24 public txnIndex;
-    uint40 public shadowPc;
+    uint128 private ordinalValue;
 
-    function mockOrdinalComponents() external view returns (OrdinalComponents memory) {
-        return OrdinalComponents({
-            blockNumber: this.blockNumber,
-            reorgIncarnation: this.reorgIncarnation,
-            txnIndex: this.txnIndex,
-            shadowPc: this.shadowPc
-        });
+    function mockOrdinal() external view returns (Ordinal) {
+        return Ordinal.wrap(ordinalValue);
     }
 
-    function withBlockNumber(uint32 _blockNumber) external returns (MockOrdinalComponents) {
-        blockNumber = _blockNumber;
-        return this;
-    }
-
-    function withReorgIncarnation(uint32 _reorgIncarnation) external returns (MockOrdinalComponents) {
-        reorgIncarnation = _reorgIncarnation;
-        return this;
-    }
-
-    function withTxnIndex(uint24 _txnIndex) external returns (MockOrdinalComponents) {
-        txnIndex = _txnIndex;
-        return this;
-    }
-
-    function withShadowPc(uint40 _shadowPc) external returns (MockOrdinalComponents) {
-        shadowPc = _shadowPc;
+    function withOrdinal(uint128 _ordinal) external returns (MockOrdinalComponents) {
+        ordinalValue = _ordinal;
         return this;
     }
 }
@@ -75,7 +52,7 @@ contract MockContexts {
             hash: this.hash,
             isSuccessful: this.isSuccessful,
             chainId: 1,
-            ordinal: ordinalComponents.mockOrdinalComponents()
+            ordinal: ordinalComponents.mockOrdinal()
         });
     }
 

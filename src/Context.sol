@@ -37,35 +37,46 @@ enum CallType {
     UNKNOWN
 }
 
-/// @notice Allows ordering of the blockchain events
-struct OrdinalComponents {
-    /// @notice Function that returns the block number where the execution occurred
-    /// @dev The height of the block in the blockchain
-    function () external returns (uint32) blockNumber;
-    /// @notice Function that returns the chain reorganization state
-    /// @dev The reorg incarnation number
-    function () external returns (uint32) reorgIncarnation;
-    /// @notice Function that returns the position of the transaction in the block
-    /// @dev Index of transaction within the block
-    function () external returns (uint24) txnIndex;
-    /// @notice Function that returns the number of instructions executed
-    /// @dev Shadow program counter value
-    function () external returns (uint40) shadowPc;
-}
+/// @notice A 128-bit value that uniquely identifies and orders blockchain events
+/// @dev Layout (MSB to LSB):
+/// - blockNumber (32 bits)
+/// - reorgIncarnation (32 bits)
+/// - txnIndex (24 bits)
+/// - shadowPc (40 bits)
+type Ordinal is uint128;
 
-// Library for OrdinalComponents
-library OrdinalComponentsLib {
-    /// @notice Creates a 128-bit ordinal from the components
-    /// @dev The ordinal is a 128-bit value that is used to uniquely identify and order blockchain events
-    /// @param components The components to create the ordinal from
-    /// @return The 128-bit ordinal
-    function createOrdinal(OrdinalComponents memory components) internal returns (uint128) {
-        return (uint128(components.blockNumber()) << 96) | (uint128(components.reorgIncarnation()) << 64)
-            | (uint128(components.txnIndex()) << 40) | uint128(components.shadowPc());
+/// @notice Library for working with Ordinal values
+library OrdinalLib {
+    /// @notice Extracts the block number from an ordinal
+    /// @param ordinal The ordinal value
+    /// @return The block number component (32 bits)
+    function getBlockNumber(Ordinal ordinal) internal pure returns (uint32) {
+        return uint32(Ordinal.unwrap(ordinal) >> 96);
+    }
+
+    /// @notice Extracts the reorg incarnation from an ordinal
+    /// @param ordinal The ordinal value
+    /// @return The reorg incarnation component (32 bits)
+    function getReorgIncarnation(Ordinal ordinal) internal pure returns (uint32) {
+        return uint32((Ordinal.unwrap(ordinal) >> 64) & 0xFFFFFFFF);
+    }
+
+    /// @notice Extracts the transaction index from an ordinal
+    /// @param ordinal The ordinal value
+    /// @return The transaction index component (24 bits)
+    function getTxnIndex(Ordinal ordinal) internal pure returns (uint24) {
+        return uint24((Ordinal.unwrap(ordinal) >> 40) & 0xFFFFFF);
+    }
+
+    /// @notice Extracts the shadow program counter from an ordinal
+    /// @param ordinal The ordinal value
+    /// @return The shadow program counter component (40 bits)
+    function getShadowPc(Ordinal ordinal) internal pure returns (uint40) {
+        return uint40(Ordinal.unwrap(ordinal) & 0xFFFFFFFFFF);
     }
 }
 
-using OrdinalComponentsLib for OrdinalComponents global;
+using OrdinalLib for Ordinal global;
 
 /// @notice Represents the execution frame of a contract call
 /// @dev Contains all relevant information about the current execution context including call hierarchy
@@ -115,8 +126,8 @@ struct TransactionContext {
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
     /// @notice The ordinal of the current execution
-    /// @dev The ordinal of the current execution
-    OrdinalComponents ordinal;
+    /// @dev A unique identifier that orders blockchain events
+    Ordinal ordinal;
 }
 
 /// @notice Context provided to function-based triggers

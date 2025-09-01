@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {
-    Ordinal,
+    GlobalIndex,
     FunctionContext,
     EventContext,
     CallFrame,
@@ -11,15 +11,15 @@ import {
     CallType
 } from "../Context.sol";
 
-contract MockOrdinalComponents {
-    uint128 private ordinalValue;
+contract MockGlobalIndex {
+    uint128 private indexValue;
 
-    function mockOrdinal() external view returns (Ordinal) {
-        return Ordinal.wrap(ordinalValue);
+    function mockGlobalIndex() external view returns (GlobalIndex) {
+        return GlobalIndex.wrap(indexValue);
     }
 
-    function withOrdinal(uint128 _ordinal) external returns (MockOrdinalComponents) {
-        ordinalValue = _ordinal;
+    function withGlobalIndex(uint128 _index) external returns (MockGlobalIndex) {
+        indexValue = _index;
         return this;
     }
 }
@@ -36,7 +36,7 @@ contract MockContexts {
     address public delegator;
     bytes32 public hash;
     bool public isSuccessful;
-    MockOrdinalComponents public ordinalComponents = new MockOrdinalComponents();
+    MockGlobalIndex public globalIndex = new MockGlobalIndex();
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
         return FunctionContext({txn: this.mockBaseContext()});
@@ -52,7 +52,7 @@ contract MockContexts {
             hash: this.hash,
             isSuccessful: this.isSuccessful,
             chainId: 1,
-            ordinal: ordinalComponents.mockOrdinal()
+            globalIndex: globalIndex.mockGlobalIndex()
         });
     }
 

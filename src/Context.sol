@@ -37,46 +37,46 @@ enum CallType {
     UNKNOWN
 }
 
-/// @notice A 128-bit value that uniquely identifies and orders blockchain events
+/// @notice A 128-bit value that uniquely identifies and orders blockchain events globally
 /// @dev Layout (MSB to LSB):
 /// - blockNumber (32 bits)
 /// - reorgIncarnation (32 bits)
 /// - txnIndex (24 bits)
 /// - shadowPc (40 bits)
-type Ordinal is uint128;
+type GlobalIndex is uint128;
 
-/// @notice Library for working with Ordinal values
-library OrdinalLib {
-    /// @notice Extracts the block number from an ordinal
-    /// @param ordinal The ordinal value
+/// @notice Library for working with GlobalIndex values
+library GlobalIndexLib {
+    /// @notice Extracts the block number from a global index
+    /// @param index The global index value
     /// @return The block number component (32 bits)
-    function getBlockNumber(Ordinal ordinal) internal pure returns (uint32) {
-        return uint32(Ordinal.unwrap(ordinal) >> 96);
+    function getBlockNumber(GlobalIndex index) internal pure returns (uint32) {
+        return uint32(GlobalIndex.unwrap(index) >> 96);
     }
 
-    /// @notice Extracts the reorg incarnation from an ordinal
-    /// @param ordinal The ordinal value
+    /// @notice Extracts the reorg incarnation from a global index
+    /// @param index The global index value
     /// @return The reorg incarnation component (32 bits)
-    function getReorgIncarnation(Ordinal ordinal) internal pure returns (uint32) {
-        return uint32((Ordinal.unwrap(ordinal) >> 64) & 0xFFFFFFFF);
+    function getReorgIncarnation(GlobalIndex index) internal pure returns (uint32) {
+        return uint32((GlobalIndex.unwrap(index) >> 64) & 0xFFFFFFFF);
     }
 
-    /// @notice Extracts the transaction index from an ordinal
-    /// @param ordinal The ordinal value
+    /// @notice Extracts the transaction index from a global index
+    /// @param index The global index value
     /// @return The transaction index component (24 bits)
-    function getTxnIndex(Ordinal ordinal) internal pure returns (uint24) {
-        return uint24((Ordinal.unwrap(ordinal) >> 40) & 0xFFFFFF);
+    function getTxnIndex(GlobalIndex index) internal pure returns (uint24) {
+        return uint24((GlobalIndex.unwrap(index) >> 40) & 0xFFFFFF);
     }
 
-    /// @notice Extracts the shadow program counter from an ordinal
-    /// @param ordinal The ordinal value
+    /// @notice Extracts the shadow program counter from a global index
+    /// @param index The global index value
     /// @return The shadow program counter component (40 bits)
-    function getShadowPc(Ordinal ordinal) internal pure returns (uint40) {
-        return uint40(Ordinal.unwrap(ordinal) & 0xFFFFFFFFFF);
+    function getShadowPc(GlobalIndex index) internal pure returns (uint40) {
+        return uint40(GlobalIndex.unwrap(index) & 0xFFFFFFFFFF);
     }
 }
 
-using OrdinalLib for Ordinal global;
+using GlobalIndexLib for GlobalIndex global;
 
 /// @notice Represents the execution frame of a contract call
 /// @dev Contains all relevant information about the current execution context including call hierarchy
@@ -125,9 +125,9 @@ struct TransactionContext {
     /// @notice The blockchain network identifier
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
-    /// @notice The ordinal of the current execution
-    /// @dev A unique identifier that orders blockchain events
-    Ordinal ordinal;
+    /// @notice The global index of the current execution
+    /// @dev A unique identifier that orders blockchain events globally
+    GlobalIndex globalIndex;
 }
 
 /// @notice Context provided to function-based triggers

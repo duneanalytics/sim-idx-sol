@@ -37,46 +37,41 @@ enum CallType {
     UNKNOWN
 }
 
-/// @notice A 128-bit value that uniquely identifies and orders blockchain events globally
-/// @dev Layout (MSB to LSB):
+/// @notice Library for working with global index values (uint128)
+/// @dev Layout of global index:
 /// - blockNumber (32 bits)
 /// - reorgIncarnation (32 bits)
 /// - txnIndex (24 bits)
 /// - shadowPc (40 bits)
-type GlobalIndex is uint128;
-
-/// @notice Library for working with GlobalIndex values
 library GlobalIndexLib {
     /// @notice Extracts the block number from a global index
     /// @param index The global index value
     /// @return The block number component (32 bits)
-    function getBlockNumber(GlobalIndex index) internal pure returns (uint32) {
-        return uint32(GlobalIndex.unwrap(index) >> 96);
+    function getBlockNumber(uint128 index) internal pure returns (uint32) {
+        return uint32(index >> 96);
     }
 
     /// @notice Extracts the reorg incarnation from a global index
     /// @param index The global index value
     /// @return The reorg incarnation component (32 bits)
-    function getReorgIncarnation(GlobalIndex index) internal pure returns (uint32) {
-        return uint32((GlobalIndex.unwrap(index) >> 64) & 0xFFFFFFFF);
+    function getReorgIncarnation(uint128 index) internal pure returns (uint32) {
+        return uint32((index >> 64));
     }
 
     /// @notice Extracts the transaction index from a global index
     /// @param index The global index value
     /// @return The transaction index component (24 bits)
-    function getTxnIndex(GlobalIndex index) internal pure returns (uint24) {
-        return uint24((GlobalIndex.unwrap(index) >> 40) & 0xFFFFFF);
+    function getTxnIndex(uint128 index) internal pure returns (uint24) {
+        return uint24((index >> 40));
     }
 
     /// @notice Extracts the shadow program counter from a global index
     /// @param index The global index value
     /// @return The shadow program counter component (40 bits)
-    function getShadowPc(GlobalIndex index) internal pure returns (uint40) {
-        return uint40(GlobalIndex.unwrap(index) & 0xFFFFFFFFFF);
+    function getShadowPc(uint128 index) internal pure returns (uint40) {
+        return uint40(index);
     }
 }
-
-using GlobalIndexLib for GlobalIndex global;
 
 /// @notice Represents the execution frame of a contract call
 /// @dev Contains all relevant information about the current execution context including call hierarchy
@@ -127,7 +122,7 @@ struct TransactionContext {
     uint256 chainId;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
-    GlobalIndex globalIndex;
+    function () external returns (uint128) globalIndex;
 }
 
 /// @notice Context provided to function-based triggers

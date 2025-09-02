@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 import {
-    GlobalIndex,
     FunctionContext,
     EventContext,
     CallFrame,
@@ -10,19 +9,6 @@ import {
     ContractVerificationSource,
     CallType
 } from "../Context.sol";
-
-contract MockGlobalIndex {
-    uint128 private indexValue;
-
-    function mockGlobalIndex() external view returns (GlobalIndex) {
-        return GlobalIndex.wrap(indexValue);
-    }
-
-    function withGlobalIndex(uint128 _index) external returns (MockGlobalIndex) {
-        indexValue = _index;
-        return this;
-    }
-}
 
 contract MockContexts {
     address public caller;
@@ -36,7 +22,16 @@ contract MockContexts {
     address public delegator;
     bytes32 public hash;
     bool public isSuccessful;
-    MockGlobalIndex public globalIndex = new MockGlobalIndex();
+    uint128 private indexValue;
+
+    function mockGlobalIndex() external view returns (uint128) {
+        return indexValue;
+    }
+
+    function withGlobalIndex(uint128 _index) external returns (MockContexts) {
+        indexValue = _index;
+        return this;
+    }
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
         return FunctionContext({txn: this.mockBaseContext()});
@@ -52,7 +47,7 @@ contract MockContexts {
             hash: this.hash,
             isSuccessful: this.isSuccessful,
             chainId: 1,
-            globalIndex: globalIndex.mockGlobalIndex()
+            globalIndex: this.mockGlobalIndex
         });
     }
 

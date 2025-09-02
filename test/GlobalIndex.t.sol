@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import {GlobalIndexLib} from "../src/Context.sol";
+import {GlobalIndexLib} from "../src/libs/GlobalIndex.sol";
 import {MockContexts} from "../src/test/MockContexts.sol";
 
 contract GlobalIndexTest is Test {

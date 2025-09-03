@@ -15,8 +15,6 @@ contract GlobalIndexTest is Test {
         // Create a global index
         uint128 index = (uint128(BLOCK_NUMBER) << 96) | (uint128(REORG_INCARNATION) << 64) | (uint128(TXN_INDEX) << 40)
             | uint128(SHADOW_PC);
-
-        // Test the expected value hasn't changed
         assertEq(index, 9781192031506562874046927644174930, "Global index computation incorrect");
 
         // Test component extraction
@@ -28,10 +26,9 @@ contract GlobalIndexTest is Test {
 
     function test_MockContexts() public {
         MockContexts mock = new MockContexts();
-        uint128 index = (uint128(BLOCK_NUMBER) << 96) | (uint128(REORG_INCARNATION) << 64) | (uint128(TXN_INDEX) << 40)
-            | uint128(SHADOW_PC);
-
+        uint128 index = 0xf00dbabe;
         mock.withGlobalIndex(index);
+
         assertEq(mock.mockGlobalIndex(), index, "Mock global index incorrect");
     }
 }

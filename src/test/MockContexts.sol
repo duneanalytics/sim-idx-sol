@@ -34,11 +34,11 @@ contract MockContexts {
     }
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
-        return FunctionContext({txn: this.mockBaseContext()});
+        return FunctionContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex});
     }
 
     function mockEventContext() external view returns (EventContext memory) {
-        return EventContext({txn: this.mockBaseContext()});
+        return EventContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex});
     }
 
     function mockBaseContext() external view returns (TransactionContext memory) {
@@ -46,8 +46,7 @@ contract MockContexts {
             call: this.mockCallFrame(),
             hash: this.hash,
             isSuccessful: this.isSuccessful,
-            chainId: 1,
-            globalIndex: this.mockGlobalIndex
+            chainId: 1
         });
     }
 

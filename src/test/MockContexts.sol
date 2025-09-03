@@ -22,13 +22,13 @@ contract MockContexts {
     address public delegator;
     bytes32 public hash;
     bool public isSuccessful;
-    uint128 private indexValue;
+    uint120 private indexValue;
 
-    function mockGlobalIndex() external view returns (uint128) {
+    function mockGlobalIndex() external view returns (uint120) {
         return indexValue;
     }
 
-    function withGlobalIndex(uint128 _index) external returns (MockContexts) {
+    function withGlobalIndex(uint120 _index) external returns (MockContexts) {
         indexValue = _index;
         return this;
     }

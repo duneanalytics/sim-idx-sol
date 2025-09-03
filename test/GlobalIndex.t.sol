@@ -6,16 +6,16 @@ import {GlobalIndexLib} from "../src/libs/GlobalIndex.sol";
 import {MockContexts} from "../src/test/MockContexts.sol";
 
 contract GlobalIndexTest is Test {
-    uint32 private constant BLOCK_NUMBER = 123456;
-    uint32 private constant REORG_INCARNATION = 7890;
-    uint24 private constant TXN_INDEX = 1234;
-    uint40 private constant SHADOW_PC = 567890;
+    uint32 private constant BLOCK_NUMBER = type(uint32).max;
+    uint24 private constant REORG_INCARNATION = type(uint24).max;
+    uint24 private constant TXN_INDEX = type(uint24).max;
+    uint40 private constant SHADOW_PC = type(uint40).max;
 
     function test_GlobalIndex() public pure {
         // Create a global index
-        uint128 index = (uint128(BLOCK_NUMBER) << 96) | (uint128(REORG_INCARNATION) << 64) | (uint128(TXN_INDEX) << 40)
-            | uint128(SHADOW_PC);
-        assertEq(index, 9781192031506562874046927644174930, "Global index computation incorrect");
+        uint120 index = (uint120(BLOCK_NUMBER) << 88) | (uint120(REORG_INCARNATION) << 64) | (uint120(TXN_INDEX) << 40)
+            | uint120(SHADOW_PC);
+        assertEq(index, 1329227995784915872903807060280344575, "Global index computation incorrect");
 
         // Test component extraction
         assertEq(GlobalIndexLib.getBlockNumber(index), BLOCK_NUMBER, "Block number extraction incorrect");
@@ -26,7 +26,7 @@ contract GlobalIndexTest is Test {
 
     function test_MockContexts() public {
         MockContexts mock = new MockContexts();
-        uint128 index = 0xf00dbabe;
+        uint120 index = 0xf00dbabe;
         mock.withGlobalIndex(index);
 
         assertEq(mock.mockGlobalIndex(), index, "Mock global index incorrect");

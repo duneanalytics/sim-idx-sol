@@ -91,6 +91,9 @@ struct TransactionContext {
 struct FunctionContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The global index of the current execution
+    /// @dev A unique identifier that orders blockchain events globally
+    function () external returns (uint128) globalIndex;
 }
 
 /// @notice Context provided to event-based triggers
@@ -98,6 +101,9 @@ struct FunctionContext {
 struct EventContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The global index of the current execution
+    /// @dev A unique identifier that orders blockchain events globally
+    function () external returns (uint128) globalIndex;
 }
 
 /// @notice Context provided to pre-function triggers
@@ -105,6 +111,9 @@ struct EventContext {
 struct PreFunctionContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The global index of the current execution
+    /// @dev A unique identifier that orders blockchain events globally
+    function () external returns (uint128) globalIndex;
 }
 
 /// @notice Context provided to raw call triggers
@@ -118,6 +127,9 @@ struct RawCallContext {
     /// @notice Function that returns the raw return data
     /// @dev The complete output data from the call
     function () external returns (bytes memory) returnData;
+    /// @notice The global index of the current execution
+    /// @dev A unique identifier that orders blockchain events globally
+    function () external returns (uint128) globalIndex;
 }
 
 /// @notice Context provided to raw pre-call triggers
@@ -128,6 +140,9 @@ struct RawPreCallContext {
     /// @notice Function that returns the raw calldata
     /// @dev The complete input data for the upcoming call
     function () external returns (bytes memory) callData;
+    /// @notice The global index of the current execution
+    /// @dev A unique identifier that orders blockchain events globally
+    function () external returns (uint128) globalIndex;
 }
 
 /// @notice Context provided to raw log triggers
@@ -141,6 +156,9 @@ struct RawLogContext {
     /// @notice Function that returns the log data
     /// @dev The non-indexed event data
     function () external returns (bytes memory) data;
+    /// @notice The global index of the current execution
+    /// @dev A unique identifier that orders blockchain events globally
+    function () external returns (uint128) globalIndex;
 }
 
 /// @notice Context provided to block-based triggers

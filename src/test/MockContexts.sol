@@ -22,13 +22,23 @@ contract MockContexts {
     address public delegator;
     bytes32 public hash;
     bool public isSuccessful;
+    uint128 private indexValue;
+
+    function mockGlobalIndex() external view returns (uint128) {
+        return indexValue;
+    }
+
+    function withGlobalIndex(uint128 _index) external returns (MockContexts) {
+        indexValue = _index;
+        return this;
+    }
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
-        return FunctionContext({txn: this.mockBaseContext()});
+        return FunctionContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex});
     }
 
     function mockEventContext() external view returns (EventContext memory) {
-        return EventContext({txn: this.mockBaseContext()});
+        return EventContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex});
     }
 
     function mockBaseContext() external view returns (TransactionContext memory) {

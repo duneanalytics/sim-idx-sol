@@ -86,11 +86,22 @@ struct TransactionContext {
     uint256 chainId;
 }
 
+// @noticed Special functions for state access
+// @dev These functions are used to access information which is otherwise hard to get
+struct SimFunctions {
+    /// @notice Function that returns the deployer of a contract
+    /// @dev The address of the account that deployed the contract
+    function(address) external returns (address) getDeployer;
+}
+
 /// @notice Context provided to function-based triggers
 /// @dev Used when triggering on specific function calls
 struct FunctionContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The special functions for state access
+    /// @dev These functions are used to access information which is otherwise hard to get
+    SimFunctions sim;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
     function () external returns (uint120) globalIndex;
@@ -101,6 +112,9 @@ struct FunctionContext {
 struct EventContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The special functions for state access
+    /// @dev These functions are used to access information which is otherwise hard to get
+    SimFunctions sim;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
     function () external returns (uint120) globalIndex;
@@ -111,6 +125,9 @@ struct EventContext {
 struct PreFunctionContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The special functions for state access
+    /// @dev These functions are used to access information which is otherwise hard to get
+    SimFunctions sim;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
     function () external returns (uint120) globalIndex;
@@ -121,6 +138,9 @@ struct PreFunctionContext {
 struct RawCallContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The special functions for state access
+    /// @dev These functions are used to access information which is otherwise hard to get
+    SimFunctions sim;
     /// @notice Function that returns the raw calldata
     /// @dev The complete input data for the call
     function () external returns (bytes memory) callData;
@@ -137,6 +157,9 @@ struct RawCallContext {
 struct RawPreCallContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The special functions for state access
+    /// @dev These functions are used to access information which is otherwise hard to get
+    SimFunctions sim;
     /// @notice Function that returns the raw calldata
     /// @dev The complete input data for the upcoming call
     function () external returns (bytes memory) callData;
@@ -150,6 +173,9 @@ struct RawPreCallContext {
 struct RawLogContext {
     /// @notice The complete transaction context
     TransactionContext txn;
+    /// @notice The special functions for state access
+    /// @dev These functions are used to access information which is otherwise hard to get
+    SimFunctions sim;
     /// @notice Function that returns the log topics
     /// @dev Array of indexed event parameters (topics 0-3)
     function () external returns (bytes32[] memory) topics;

@@ -7,7 +7,8 @@ import {
     CallFrame,
     TransactionContext,
     ContractVerificationSource,
-    CallType
+    CallType,
+    SimFunctions
 } from "../Context.sol";
 
 contract MockContexts {
@@ -34,11 +35,16 @@ contract MockContexts {
     }
 
     function mockFunctionContext() external view returns (FunctionContext memory) {
-        return FunctionContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex});
+        return FunctionContext({
+            txn: this.mockBaseContext(),
+            globalIndex: this.mockGlobalIndex,
+            sim: this.mockSimFunctions()
+        });
     }
 
     function mockEventContext() external view returns (EventContext memory) {
-        return EventContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex});
+        return
+            EventContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex, sim: this.mockSimFunctions()});
     }
 
     function mockBaseContext() external view returns (TransactionContext memory) {
@@ -107,5 +113,14 @@ contract MockContexts {
     function withDelegatee(address _delegatee) external returns (MockContexts) {
         delegatee = _delegatee;
         return this;
+    }
+
+    function mockSimFunctions() external view returns (SimFunctions memory) {
+        SimFunctions memory _sim = SimFunctions({getDeployer: this.getDeployer});
+        return _sim;
+    }
+
+    function getDeployer(address) external pure returns (address) {
+        return address(0);
     }
 }

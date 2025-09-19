@@ -105,6 +105,12 @@ struct FunctionContext {
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
     function () external returns (uint120) globalIndex;
+    // @notice Whether the function call input was decoded successfully
+    // @dev If the function call input was decoded successfully, this will be true
+    bool isInputDecodingSuccessful;
+    // @notice Whether the function call output was decoded successfully
+    // @dev If the function call output was decoded successfully, this will be true
+    bool isOutputDecodingSuccessful;
 }
 
 /// @notice Context provided to event-based triggers
@@ -118,6 +124,9 @@ struct EventContext {
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
     function () external returns (uint120) globalIndex;
+    // @notice Whether the event log was decoded successfully
+    // @dev If the event log was decoded successfully, this will be true
+    bool isDecodingSuccessful;
 }
 
 /// @notice Context provided to pre-function triggers
@@ -131,6 +140,9 @@ struct PreFunctionContext {
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
     function () external returns (uint120) globalIndex;
+    // @notice Whether the function call input was decoded successfully
+    // @dev If the function call input was decoded successfully, this will be true
+    bool isInputDecodingSuccessful;
 }
 
 /// @notice Context provided to raw call triggers

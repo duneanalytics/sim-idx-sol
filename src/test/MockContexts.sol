@@ -38,13 +38,19 @@ contract MockContexts {
         return FunctionContext({
             txn: this.mockBaseContext(),
             globalIndex: this.mockGlobalIndex,
-            sim: this.mockSimFunctions()
+            sim: this.mockSimFunctions(),
+            isInputDecodingSuccessful: true,
+            isOutputDecodingSuccessful: true
         });
     }
 
     function mockEventContext() external view returns (EventContext memory) {
-        return
-            EventContext({txn: this.mockBaseContext(), globalIndex: this.mockGlobalIndex, sim: this.mockSimFunctions()});
+        return EventContext({
+            txn: this.mockBaseContext(),
+            globalIndex: this.mockGlobalIndex,
+            sim: this.mockSimFunctions(),
+            isDecodingSuccessful: true
+        });
     }
 
     function mockBaseContext() external view returns (TransactionContext memory) {

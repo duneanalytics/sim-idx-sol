@@ -130,11 +130,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(Bytes32ToBytes32Map storage map, uint256 i)
-        internal
-        view
-        returns (bytes32 key, bytes32 value)
-    {
+    function getIndexAt(Bytes32ToBytes32Map storage map, uint256 i) internal view returns (bytes32 key, bytes32 value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -194,11 +190,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(Bytes32ToUint256Map storage map, uint256 i)
-        internal
-        view
-        returns (bytes32 key, uint256 value)
-    {
+    function getIndexAt(Bytes32ToUint256Map storage map, uint256 i) internal view returns (bytes32 key, uint256 value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -258,11 +250,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(Bytes32ToAddressMap storage map, uint256 i)
-        internal
-        view
-        returns (bytes32 key, address value)
-    {
+    function getIndexAt(Bytes32ToAddressMap storage map, uint256 i) internal view returns (bytes32 key, address value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -322,11 +310,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(Uint256ToBytes32Map storage map, uint256 i)
-        internal
-        view
-        returns (uint256 key, bytes32 value)
-    {
+    function getIndexAt(Uint256ToBytes32Map storage map, uint256 i) internal view returns (uint256 key, bytes32 value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -386,11 +370,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(Uint256ToUint256Map storage map, uint256 i)
-        internal
-        view
-        returns (uint256 key, uint256 value)
-    {
+    function getIndexAt(Uint256ToUint256Map storage map, uint256 i) internal view returns (uint256 key, uint256 value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -450,11 +430,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(Uint256ToAddressMap storage map, uint256 i)
-        internal
-        view
-        returns (uint256 key, address value)
-    {
+    function getIndexAt(Uint256ToAddressMap storage map, uint256 i) internal view returns (uint256 key, address value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -514,11 +490,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(AddressToBytes32Map storage map, uint256 i)
-        internal
-        view
-        returns (address key, bytes32 value)
-    {
+    function getIndexAt(AddressToBytes32Map storage map, uint256 i) internal view returns (address key, bytes32 value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -578,11 +550,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(AddressToUint256Map storage map, uint256 i)
-        internal
-        view
-        returns (address key, uint256 value)
-    {
+    function getIndexAt(AddressToUint256Map storage map, uint256 i) internal view returns (address key, uint256 value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 
@@ -642,11 +610,7 @@ library EnumerableMapLib {
     }
 
     /// @dev Returns the key-value pair at index `i`. Reverts if `i` is out-of-bounds.
-    function getIndexAt(AddressToAddressMap storage map, uint256 i)
-        internal
-        view
-        returns (address key, address value)
-    {
+    function getIndexAt(AddressToAddressMap storage map, uint256 i) internal view returns (address key, address value) {
         value = map._values[key = EnumerableSetLib.getIndexAt(map._keys, i)];
     }
 

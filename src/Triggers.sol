@@ -99,11 +99,10 @@ struct ContractTarget {
 /// @param contractAddress The contract address on the specified chain
 /// @return A ChainIdContract with full block range coverage
 function chainContract(Chains chain, address contractAddress) pure returns (ChainIdContract memory) {
-    return ChainIdContract({
-        chainId: chainToChainId(chain),
-        contractAddress: contractAddress,
-        blockRange: blockRangeFull()
-    });
+    return
+        ChainIdContract({
+            chainId: chainToChainId(chain), contractAddress: contractAddress, blockRange: blockRangeFull()
+        });
 }
 
 /// @notice Creates a ChainIdContract from a ChainWithRange and contract address

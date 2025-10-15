@@ -84,6 +84,9 @@ struct TransactionContext {
     /// @notice The blockchain network identifier
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
+    /// @notice Function that returns the transaction index in the block
+    /// @dev The position of the transaction in the block
+    function () external returns (uint256) transactionIndex;
 }
 
 // @noticed Special functions for state access
@@ -127,6 +130,9 @@ struct EventContext {
     // @notice Whether the event log was decoded successfully
     // @dev If the event log was decoded successfully, this will be true
     bool isDecodingSuccessful;
+    /// @notice Function that returns the log index in the block
+    /// @dev The position of the log entry in the block
+    function () external returns (uint256) logIndex;
 }
 
 /// @notice Context provided to pre-function triggers
@@ -197,6 +203,9 @@ struct RawLogContext {
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
     function () external returns (uint120) globalIndex;
+    /// @notice Function that returns the log index in the block
+    /// @dev The position of the log entry in the block
+    function () external returns (uint256) logIndex;
 }
 
 /// @notice Context provided to block-based triggers

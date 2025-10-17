@@ -41,11 +41,7 @@ library BlockRangeLib {
     /// @param range The existing block range to modify
     /// @param endBlockInclusive The ending block number (inclusive)
     /// @return The modified BlockRange with kind set to RangeInclusive
-    function withEndBlock(BlockRange memory range, uint64 endBlockInclusive)
-        internal
-        pure
-        returns (BlockRange memory)
-    {
+    function withEndBlock(BlockRange memory range, uint64 endBlockInclusive) internal pure returns (BlockRange memory) {
         range.endBlockInclusive = endBlockInclusive;
         range.kind = BlockRangeKind.RangeInclusive;
         return range;

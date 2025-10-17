@@ -42,28 +42,28 @@ enum CallType {
 struct CallFrame {
     /// @notice Function that returns the address of the currently executing contract
     /// @dev The contract whose code is currently being executed
-    function () external returns (address) callee;
+    function() external returns (address) callee;
     /// @notice Function that returns the address that initiated the current call
     /// @dev Could be an EOA or another contract
-    function () external returns (address) caller;
+    function() external returns (address) caller;
     /// @notice Function that returns the address that delegated the current call
     /// @dev Relevant for proxy patterns where execution is delegated
-    function () external returns (address) delegator;
+    function() external returns (address) delegator;
     /// @notice Function that returns the address of the implementation contract
     /// @dev The contract that contains the actual implementation code
-    function () external returns (address) delegatee;
+    function() external returns (address) delegatee;
     /// @notice Function that returns the calldata for the current call
     /// @dev The input data sent with the transaction or call
-    function () external returns (bytes memory) callData;
+    function() external returns (bytes memory) callData;
     /// @notice Function that returns the current call depth
     /// @dev How many levels deep the current call is in the call stack
-    function () external returns (uint256) callDepth;
+    function() external returns (uint256) callDepth;
     /// @notice Function that returns the value transferred with the call
     /// @dev Amount of wei sent with the call
-    function () external returns (uint256) value;
+    function() external returns (uint256) value;
     /// @notice Function that returns the type of the current call
     /// @dev One of the CallType enum values
-    function () external returns (CallType) callType;
+    function() external returns (CallType) callType;
     /// @notice The method used to verify this contract for indexing
     /// @dev Determines how the contract's functionality was identified
     ContractVerificationSource verificationSource;
@@ -77,13 +77,16 @@ struct TransactionContext {
     CallFrame call;
     /// @notice Function that returns whether the transaction succeeded
     /// @dev True if the transaction completed without reverting
-    function () external returns (bool) isSuccessful;
+    function() external returns (bool) isSuccessful;
     /// @notice Function that returns the transaction hash
     /// @dev The unique identifier for this transaction
-    function () external returns (bytes32) hash;
+    function() external returns (bytes32) hash;
     /// @notice The blockchain network identifier
     /// @dev Chain ID as defined in EIP-155
     uint256 chainId;
+    /// @notice Function that returns the transaction index in the block
+    /// @dev The position of the transaction in the block
+    function() external returns (uint64) transactionIndex;
 }
 
 // @noticed Special functions for state access
@@ -104,7 +107,7 @@ struct FunctionContext {
     SimFunctions sim;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
-    function () external returns (uint120) globalIndex;
+    function() external returns (uint120) globalIndex;
     // @notice Whether the function call input was decoded successfully
     // @dev If the function call input was decoded successfully, this will be true
     bool isInputDecodingSuccessful;
@@ -123,10 +126,13 @@ struct EventContext {
     SimFunctions sim;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
-    function () external returns (uint120) globalIndex;
+    function() external returns (uint120) globalIndex;
     // @notice Whether the event log was decoded successfully
     // @dev If the event log was decoded successfully, this will be true
     bool isDecodingSuccessful;
+    /// @notice Function that returns the log index in the block
+    /// @dev The position of the log entry in the block
+    function() external returns (uint64) logIndex;
 }
 
 /// @notice Context provided to pre-function triggers
@@ -139,7 +145,7 @@ struct PreFunctionContext {
     SimFunctions sim;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
-    function () external returns (uint120) globalIndex;
+    function() external returns (uint120) globalIndex;
     // @notice Whether the function call input was decoded successfully
     // @dev If the function call input was decoded successfully, this will be true
     bool isInputDecodingSuccessful;
@@ -155,13 +161,13 @@ struct RawCallContext {
     SimFunctions sim;
     /// @notice Function that returns the raw calldata
     /// @dev The complete input data for the call
-    function () external returns (bytes memory) callData;
+    function() external returns (bytes memory) callData;
     /// @notice Function that returns the raw return data
     /// @dev The complete output data from the call
-    function () external returns (bytes memory) returnData;
+    function() external returns (bytes memory) returnData;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
-    function () external returns (uint120) globalIndex;
+    function() external returns (uint120) globalIndex;
 }
 
 /// @notice Context provided to raw pre-call triggers
@@ -174,10 +180,10 @@ struct RawPreCallContext {
     SimFunctions sim;
     /// @notice Function that returns the raw calldata
     /// @dev The complete input data for the upcoming call
-    function () external returns (bytes memory) callData;
+    function() external returns (bytes memory) callData;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
-    function () external returns (uint120) globalIndex;
+    function() external returns (uint120) globalIndex;
 }
 
 /// @notice Context provided to raw log triggers
@@ -190,13 +196,16 @@ struct RawLogContext {
     SimFunctions sim;
     /// @notice Function that returns the log topics
     /// @dev Array of indexed event parameters (topics 0-3)
-    function () external returns (bytes32[] memory) topics;
+    function() external returns (bytes32[] memory) topics;
     /// @notice Function that returns the log data
     /// @dev The non-indexed event data
-    function () external returns (bytes memory) data;
+    function() external returns (bytes memory) data;
     /// @notice The global index of the current execution
     /// @dev A unique identifier that orders blockchain events globally
-    function () external returns (uint120) globalIndex;
+    function() external returns (uint120) globalIndex;
+    /// @notice Function that returns the log index in the block
+    /// @dev The position of the log entry in the block
+    function() external returns (uint64) logIndex;
 }
 
 /// @notice Context provided to block-based triggers

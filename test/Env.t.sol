@@ -16,17 +16,17 @@ contract EnvTest is Test {
         vm.selectFork(chainIdToForkId[1]);
         assertEq(vm.activeFork(), chainIdToForkId[1]);
 
-        vm.rollFork(20000000);
-        assertEq(block.number, 20000000);
-        assertEq(blockNumber(), 20000000);
+        vm.rollFork(23583017);
+        assertEq(block.number, 23583017);
+        assertEq(blockNumber(), 23583017);
     }
 
     function test_blockNumber_arbitrum() public {
         vm.selectFork(chainIdToForkId[42161]);
         assertEq(vm.activeFork(), chainIdToForkId[42161]);
 
-        vm.rollFork(372169557);
-        assertEq(block.number, 23218710);
+        vm.rollFork(389783281);
+        assertEq(block.number, 23583003);
         // should revert with no data because foundry doesn't support the arbsys precompiles
         vm.expectRevert(bytes(""), address(ARB_SYS_ADDRESS));
         blockNumber();

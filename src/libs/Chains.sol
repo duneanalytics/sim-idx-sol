@@ -101,10 +101,10 @@ library ChainsLib {
     /// @param startBlockInclusive The starting block number (inclusive)
     /// @return A ChainWithRange configured from the specified block
     function withStartBlock(Chains chain, uint64 startBlockInclusive) internal pure returns (ChainWithRange memory) {
-        return ChainWithRange({
-            chainId: chainToChainId(chain),
-            blockRange: BlockRangeLib.withStartBlock(startBlockInclusive)
-        });
+        return
+            ChainWithRange({
+                chainId: chainToChainId(chain), blockRange: BlockRangeLib.withStartBlock(startBlockInclusive)
+            });
     }
 
     /// @notice Adds an end block to an existing chain configuration

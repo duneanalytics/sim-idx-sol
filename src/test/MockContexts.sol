@@ -24,6 +24,8 @@ contract MockContexts {
     bytes32 public hash;
     bool public isSuccessful;
     uint120 private indexValue;
+    uint64 public transactionIndex;
+    uint64 public logIndex;
 
     function mockGlobalIndex() external view returns (uint120) {
         return indexValue;
@@ -49,7 +51,8 @@ contract MockContexts {
             txn: this.mockBaseContext(),
             globalIndex: this.mockGlobalIndex,
             sim: this.mockSimFunctions(),
-            isDecodingSuccessful: true
+            isDecodingSuccessful: true,
+            logIndex: this.logIndex
         });
     }
 
@@ -58,7 +61,8 @@ contract MockContexts {
             call: this.mockCallFrame(),
             hash: this.hash,
             isSuccessful: this.isSuccessful,
-            chainId: 1
+            chainId: 1,
+            transactionIndex: this.transactionIndex
         });
     }
 
@@ -128,5 +132,15 @@ contract MockContexts {
 
     function getDeployer(address) external pure returns (address) {
         return address(0);
+    }
+
+    function withTransactionIndex(uint64 _transactionIndex) external returns (MockContexts) {
+        transactionIndex = _transactionIndex;
+        return this;
+    }
+
+    function withLogIndex(uint64 _logIndex) external returns (MockContexts) {
+        logIndex = _logIndex;
+        return this;
     }
 }

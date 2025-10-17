@@ -24,8 +24,8 @@ contract MockContexts {
     bytes32 public hash;
     bool public isSuccessful;
     uint120 private indexValue;
-    uint256 public transactionIndex;
-    uint256 public logIndex;
+    uint64 public transactionIndex;
+    uint64 public logIndex;
 
     function mockGlobalIndex() external view returns (uint120) {
         return indexValue;
@@ -134,12 +134,12 @@ contract MockContexts {
         return address(0);
     }
 
-    function withTransactionIndex(uint256 _transactionIndex) external returns (MockContexts) {
+    function withTransactionIndex(uint64 _transactionIndex) external returns (MockContexts) {
         transactionIndex = _transactionIndex;
         return this;
     }
 
-    function withLogIndex(uint256 _logIndex) external returns (MockContexts) {
+    function withLogIndex(uint64 _logIndex) external returns (MockContexts) {
         logIndex = _logIndex;
         return this;
     }

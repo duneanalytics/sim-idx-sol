@@ -86,7 +86,7 @@ struct TransactionContext {
     uint256 chainId;
     /// @notice Function that returns the transaction index in the block
     /// @dev The position of the transaction in the block
-    function() external returns (uint256) transactionIndex;
+    function() external returns (uint64) transactionIndex;
 }
 
 // @noticed Special functions for state access
@@ -132,7 +132,7 @@ struct EventContext {
     bool isDecodingSuccessful;
     /// @notice Function that returns the log index in the block
     /// @dev The position of the log entry in the block
-    function() external returns (uint256) logIndex;
+    function() external returns (uint64) logIndex;
 }
 
 /// @notice Context provided to pre-function triggers
@@ -205,7 +205,7 @@ struct RawLogContext {
     function() external returns (uint120) globalIndex;
     /// @notice Function that returns the log index in the block
     /// @dev The position of the log entry in the block
-    function() external returns (uint256) logIndex;
+    function() external returns (uint64) logIndex;
 }
 
 /// @notice Context provided to block-based triggers

@@ -10,6 +10,7 @@ contract EnvTest is Test {
     function setUp() public {
         chainIdToForkId[1] = vm.createFork(vm.rpcUrl("ethereum"));
         chainIdToForkId[42161] = vm.createFork(vm.rpcUrl("arbitrum"));
+        chainIdToForkId[100] = vm.createFork(vm.rpcUrl("gnosis"));
     }
 
     function test_blockNumber() public {
@@ -30,5 +31,14 @@ contract EnvTest is Test {
         // should revert with no data because foundry doesn't support the arbsys precompiles
         vm.expectRevert(bytes(""), address(ARB_SYS_ADDRESS));
         blockNumber();
+    }
+
+    function test_blockNumber_gnosis() public {
+        vm.selectFork(chainIdToForkId[100]);
+        assertEq(vm.activeFork(), chainIdToForkId[100]);
+
+        vm.rollFork(23583017);
+        assertEq(block.number, 23583017);
+        assertEq(blockNumber(), 23583017);
     }
 }

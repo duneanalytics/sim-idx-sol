@@ -33,7 +33,9 @@ enum Chains {
     /// @dev Arbitrum One (Chain ID: 42161)
     Arbitrum,
     /// @dev Optimism Mainnet (Chain ID: 10)
-    Optimism
+    Optimism,
+    /// @dev Gnosis (Chain ID: 100)
+    Gnosis
 }
 
 using ChainsLib for Chains global;
@@ -57,12 +59,13 @@ function chainToChainId(Chains chain) pure returns (uint256) {
     if (chain == Chains.Shape) return 360;
     if (chain == Chains.Arbitrum) return 42161;
     if (chain == Chains.Optimism) return 10;
+    if (chain == Chains.Gnosis) return 100;
     revert("Unsupported chain");
 }
 
 /// @notice Returns all supported chains
 /// @return An array of all supported chains
-function allSupportedChains() pure returns (Chains[14] memory) {
+function allSupportedChains() pure returns (Chains[15] memory) {
     return [
         Chains.Ethereum,
         Chains.EthereumSepolia,
@@ -77,7 +80,8 @@ function allSupportedChains() pure returns (Chains[14] memory) {
         Chains.Soneium,
         Chains.Shape,
         Chains.Arbitrum,
-        Chains.Optimism
+        Chains.Optimism,
+        Chains.Gnosis
     ];
 }
 

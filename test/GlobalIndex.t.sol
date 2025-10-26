@@ -13,8 +13,7 @@ contract GlobalIndexTest is Test {
 
     function test_GlobalIndex() public pure {
         // Create a global index
-        uint120 index =
-            (uint120(BLOCK_NUMBER) << 88) | (uint120(REORG_INCARNATION) << 64) | (uint120(TXN_INDEX) << 40)
+        uint120 index = (uint120(BLOCK_NUMBER) << 88) | (uint120(REORG_INCARNATION) << 64) | (uint120(TXN_INDEX) << 40)
             | uint120(SHADOW_PC);
         assertEq(index, 1329227995784915872903807060280344575, "Global index computation incorrect");
 

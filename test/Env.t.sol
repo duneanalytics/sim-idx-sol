@@ -16,9 +16,9 @@ contract EnvTest is Test {
         vm.selectFork(chainIdToForkId[1]);
         assertEq(vm.activeFork(), chainIdToForkId[1]);
 
-        vm.rollFork(23583017);
-        assertEq(block.number, 23583017);
-        assertEq(blockNumber(), 23583017);
+        vm.rollFork(23668342);
+        assertEq(block.number, 23668342);
+        assertEq(blockNumber(), 23668342);
     }
 
     function test_blockNumber_arbitrum() public {

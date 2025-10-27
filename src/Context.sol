@@ -95,6 +95,45 @@ struct SimFunctions {
     /// @notice Function that returns the deployer of a contract
     /// @dev The address of the account that deployed the contract
     function(address) external returns (address) getDeployer;
+
+    /// @notice Function that executes a SQL statement. It can use bind parameters.
+    ///         Bind parameters are represented by $<number> where number is the
+    ///         position of the parameter. For example, $1 is the first parameter,
+    ///         $2 is the second parameter, etc.
+    /// @dev The SQL statement to execute
+    function(string memory) external sqlStatementExecute;
+
+    /// @notice Function that adds a boolean argument to the SQL statement
+    /// @dev The boolean value to add
+    function(bool) external sqlArgBool;
+
+    /// @notice Function that adds an int64 argument to the SQL statement
+    /// @dev The int64 value to add
+    function(int64) external sqlArgInt64;
+
+    /// @notice Function that adds a uint64 argument to the SQL statement
+    /// @dev The uint64 value to add
+    function(uint64) external sqlArgUint64;
+
+    /// @notice Function that adds a uint256 argument to the SQL statement
+    /// @dev The uint256 value to add
+    function(uint256) external sqlArgUint256;
+
+    /// @notice Function that adds a bytes32 argument to the SQL statement
+    /// @dev The bytes32 value to add
+    function(bytes32) external sqlArgBytes32;
+
+    /// @notice Function that adds a bytes argument to the SQL statement
+    /// @dev The bytes value to add
+    function(bytes memory) external sqlArgBytes;
+
+    /// @notice Function that adds a string argument to the SQL statement
+    /// @dev The string value to add
+    function(string memory) external sqlArgString;
+
+    /// @notice Function that adds an address argument to the SQL statement
+    /// @dev The address value to add
+    function(address) external sqlArgAddress;
 }
 
 /// @notice Context provided to function-based triggers
@@ -211,6 +250,9 @@ struct RawLogContext {
 /// @notice Context provided to block-based triggers
 /// @dev Used for triggers that fire on block events
 struct RawBlockContext {
+    /// @notice The special functions for state access
+    /// @dev These functions are used to access information which is otherwise hard to get
+    SimFunctions sim;
     /// @notice The block number for this context
     /// @dev The height of the block in the blockchain
     uint256 blockNumber;

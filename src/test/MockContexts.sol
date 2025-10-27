@@ -126,12 +126,59 @@ contract MockContexts {
     }
 
     function mockSimFunctions() external view returns (SimFunctions memory) {
-        SimFunctions memory _sim = SimFunctions({getDeployer: this.getDeployer});
+        SimFunctions memory _sim = SimFunctions({
+            getDeployer: this.getDeployer,
+            sqlStatementExecute: this.sqlStatementExecute,
+            sqlArgBool: this.sqlArgBool,
+            sqlArgInt64: this.sqlArgInt64,
+            sqlArgUint64: this.sqlArgUint64,
+            sqlArgUint256: this.sqlArgUint256,
+            sqlArgBytes32: this.sqlArgBytes32,
+            sqlArgBytes: this.sqlArgBytes,
+            sqlArgString: this.sqlArgString,
+            sqlArgAddress: this.sqlArgAddress
+        });
         return _sim;
     }
 
     function getDeployer(address) external pure returns (address) {
         return address(0);
+    }
+
+    function sqlStatementExecute(string memory stmt) external pure {
+        return;
+    }
+
+    function sqlArgBool(bool) external pure {
+        return;
+    }
+
+    function sqlArgInt64(int64) external pure {
+        return;
+    }
+
+    function sqlArgUint64(uint64) external pure {
+        return;
+    }
+
+    function sqlArgUint256(uint256) external pure {
+        return;
+    }
+
+    function sqlArgBytes32(bytes32) external pure {
+        return;
+    }
+
+    function sqlArgBytes(bytes memory) external pure {
+        return;
+    }
+
+    function sqlArgString(string memory) external pure {
+        return;
+    }
+
+    function sqlArgAddress(address) external pure {
+        return;
     }
 
     function withTransactionIndex(uint64 _transactionIndex) external returns (MockContexts) {

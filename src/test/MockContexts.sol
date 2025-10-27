@@ -126,12 +126,59 @@ contract MockContexts {
     }
 
     function mockSimFunctions() external view returns (SimFunctions memory) {
-        SimFunctions memory _sim = SimFunctions({getDeployer: this.getDeployer});
+        SimFunctions memory _sim = SimFunctions({
+            getDeployer: this.getDeployer,
+            SQLStatementExecute: this.SQLStatementExecute,
+            SQLArgBool: this.SQLArgBool,
+            SQLArgInt64: this.SQLArgInt64,
+            SQLArgUint64: this.SQLArgUint64,
+            SQLArgUint256: this.SQLArgUint256,
+            SQLArgBytes32: this.SQLArgBytes32,
+            SQLArgBytes: this.SQLArgBytes,
+            SQLArgString: this.SQLArgString,
+            SQLArgAddress: this.SQLArgAddress
+        });
         return _sim;
     }
 
     function getDeployer(address) external pure returns (address) {
         return address(0);
+    }
+
+    function SQLStatementExecute(string memory stmt) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgBool(bool value) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgInt64(int64 value) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgUint64(uint64 value) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgUint256(uint256 value) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgBytes32(bytes32 value) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgBytes(bytes memory value) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgString(string memory value) external pure returns (void) {
+        return;
+    }
+
+    function SQLArgAddress(address value) external pure returns (void) {
+        return;
     }
 
     function withTransactionIndex(uint64 _transactionIndex) external returns (MockContexts) {

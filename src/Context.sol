@@ -101,39 +101,39 @@ struct SimFunctions {
     ///         position of the parameter. For example, $1 is the first parameter,
     ///         $2 is the second parameter, etc.
     /// @dev The SQL statement to execute
-    function SQLStatementExecute(string memory stmt);
+    function(string memory stmt) external SQLStatementExecute;
 
     /// @notice Function that adds a boolean argument to the SQL statement
     /// @dev The boolean value to add
-    function SQLArgBool(bool value);
+    function(bool value) external SQLArgBool;
 
     /// @notice Function that adds an int64 argument to the SQL statement
     /// @dev The int64 value to add
-    function SQLArgInt64(int64 value);
+    function(int64 value) external SQLArgInt64;
 
     /// @notice Function that adds a uint64 argument to the SQL statement
     /// @dev The uint64 value to add
-    function SQLArgUint64(uint64 value);
+    function(uint64 value) external SQLArgUint64;
 
     /// @notice Function that adds a uint256 argument to the SQL statement
     /// @dev The uint256 value to add
-    function SQLArgUint256(uint256 value);
+    function(uint256 value) external SQLArgUint256;
 
     /// @notice Function that adds a bytes32 argument to the SQL statement
     /// @dev The bytes32 value to add
-    function SQLArgBytes32(bytes32 value);
+    function(bytes32 value) external SQLArgBytes32;
 
     /// @notice Function that adds a bytes argument to the SQL statement
     /// @dev The bytes value to add
-    function SQLArgBytes(bytes memory value);
+    function(bytes memory value) external SQLArgBytes;
 
     /// @notice Function that adds a string argument to the SQL statement
     /// @dev The string value to add
-    function SQLArgString(string memory value);
+    function(string memory value) external SQLArgString;
 
     /// @notice Function that adds an address argument to the SQL statement
     /// @dev The address value to add
-    function SQLArgAddress(address value);
+    function(address value) external SQLArgAddress;
 }
 
 /// @notice Context provided to function-based triggers

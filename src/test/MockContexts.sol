@@ -145,39 +145,39 @@ contract MockContexts {
         return address(0);
     }
 
-    function SQLStatementExecute(string memory stmt) external pure returns (void) {
+    function SQLStatementExecute(string memory stmt) external pure {
         return;
     }
 
-    function SQLArgBool(bool value) external pure returns (void) {
+    function SQLArgBool(bool value) external pure {
         return;
     }
 
-    function SQLArgInt64(int64 value) external pure returns (void) {
+    function SQLArgInt64(int64 value) external pure {
         return;
     }
 
-    function SQLArgUint64(uint64 value) external pure returns (void) {
+    function SQLArgUint64(uint64 value) external pure {
         return;
     }
 
-    function SQLArgUint256(uint256 value) external pure returns (void) {
+    function SQLArgUint256(uint256 value) external pure {
         return;
     }
 
-    function SQLArgBytes32(bytes32 value) external pure returns (void) {
+    function SQLArgBytes32(bytes32 value) external pure {
         return;
     }
 
-    function SQLArgBytes(bytes memory value) external pure returns (void) {
+    function SQLArgBytes(bytes memory value) external pure {
         return;
     }
 
-    function SQLArgString(string memory value) external pure returns (void) {
+    function SQLArgString(string memory value) external pure {
         return;
     }
 
-    function SQLArgAddress(address value) external pure returns (void) {
+    function SQLArgAddress(address value) external pure {
         return;
     }
 

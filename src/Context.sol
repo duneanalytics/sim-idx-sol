@@ -101,39 +101,39 @@ struct SimFunctions {
     ///         position of the parameter. For example, $1 is the first parameter,
     ///         $2 is the second parameter, etc.
     /// @dev The SQL statement to execute
-    function(string memory stmt) external SQLStatementExecute;
+    function(string memory) external sqlStatementExecute;
 
     /// @notice Function that adds a boolean argument to the SQL statement
     /// @dev The boolean value to add
-    function(bool value) external SQLArgBool;
+    function(bool) external sqlArgBool;
 
     /// @notice Function that adds an int64 argument to the SQL statement
     /// @dev The int64 value to add
-    function(int64 value) external SQLArgInt64;
+    function(int64) external sqlArgInt64;
 
     /// @notice Function that adds a uint64 argument to the SQL statement
     /// @dev The uint64 value to add
-    function(uint64 value) external SQLArgUint64;
+    function(uint64) external sqlArgUint64;
 
     /// @notice Function that adds a uint256 argument to the SQL statement
     /// @dev The uint256 value to add
-    function(uint256 value) external SQLArgUint256;
+    function(uint256) external sqlArgUint256;
 
     /// @notice Function that adds a bytes32 argument to the SQL statement
     /// @dev The bytes32 value to add
-    function(bytes32 value) external SQLArgBytes32;
+    function(bytes32) external sqlArgBytes32;
 
     /// @notice Function that adds a bytes argument to the SQL statement
     /// @dev The bytes value to add
-    function(bytes memory value) external SQLArgBytes;
+    function(bytes memory) external sqlArgBytes;
 
     /// @notice Function that adds a string argument to the SQL statement
     /// @dev The string value to add
-    function(string memory value) external SQLArgString;
+    function(string memory) external sqlArgString;
 
     /// @notice Function that adds an address argument to the SQL statement
     /// @dev The address value to add
-    function(address value) external SQLArgAddress;
+    function(address) external sqlArgAddress;
 }
 
 /// @notice Context provided to function-based triggers

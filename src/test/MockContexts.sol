@@ -128,15 +128,15 @@ contract MockContexts {
     function mockSimFunctions() external view returns (SimFunctions memory) {
         SimFunctions memory _sim = SimFunctions({
             getDeployer: this.getDeployer,
-            SQLStatementExecute: this.SQLStatementExecute,
-            SQLArgBool: this.SQLArgBool,
-            SQLArgInt64: this.SQLArgInt64,
-            SQLArgUint64: this.SQLArgUint64,
-            SQLArgUint256: this.SQLArgUint256,
-            SQLArgBytes32: this.SQLArgBytes32,
-            SQLArgBytes: this.SQLArgBytes,
-            SQLArgString: this.SQLArgString,
-            SQLArgAddress: this.SQLArgAddress
+            sqlStatementExecute: this.sqlStatementExecute,
+            sqlArgBool: this.sqlArgBool,
+            sqlArgInt64: this.sqlArgInt64,
+            sqlArgUint64: this.sqlArgUint64,
+            sqlArgUint256: this.sqlArgUint256,
+            sqlArgBytes32: this.sqlArgBytes32,
+            sqlArgBytes: this.sqlArgBytes,
+            sqlArgString: this.sqlArgString,
+            sqlArgAddress: this.sqlArgAddress
         });
         return _sim;
     }
@@ -145,39 +145,39 @@ contract MockContexts {
         return address(0);
     }
 
-    function SQLStatementExecute(string memory stmt) external pure {
+    function sqlStatementExecute(string memory stmt) external pure {
         return;
     }
 
-    function SQLArgBool(bool value) external pure {
+    function sqlArgBool(bool) external pure {
         return;
     }
 
-    function SQLArgInt64(int64 value) external pure {
+    function sqlArgInt64(int64) external pure {
         return;
     }
 
-    function SQLArgUint64(uint64 value) external pure {
+    function sqlArgUint64(uint64) external pure {
         return;
     }
 
-    function SQLArgUint256(uint256 value) external pure {
+    function sqlArgUint256(uint256) external pure {
         return;
     }
 
-    function SQLArgBytes32(bytes32 value) external pure {
+    function sqlArgBytes32(bytes32) external pure {
         return;
     }
 
-    function SQLArgBytes(bytes memory value) external pure {
+    function sqlArgBytes(bytes memory) external pure {
         return;
     }
 
-    function SQLArgString(string memory value) external pure {
+    function sqlArgString(string memory) external pure {
         return;
     }
 
-    function SQLArgAddress(address value) external pure {
+    function sqlArgAddress(address) external pure {
         return;
     }
 

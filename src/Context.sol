@@ -134,6 +134,69 @@ struct SimFunctions {
     /// @notice Function that adds an address argument to the SQL statement
     /// @dev The address value to add
     function(address) external sqlArgAddress;
+
+    /// @notice Function that executes a SQL SELECT query. It can use bind parameters.
+    ///         Bind parameters are represented by $<number> where number is the
+    ///         position of the parameter. For example, $1 is the first parameter,
+    ///         $2 is the second parameter, etc.
+    /// @dev The SQL statement to execute
+    // @return hasResult True if the query returned results
+    function(string memory) external returns (bool) sqlQuery;
+
+    /// @notice Function that returns the number of rows in the current result.
+    /// @dev Gets the row count from the last query
+    // @return rowCount The number of rows in the result set
+    function() external returns (uint64) sqlRowCount;
+
+    /// @notice Function that retrieves a boolean value from the requested column
+    /// @dev Gets a boolean from the specified column in the current row
+    // @return value The boolean value from the specified column
+    function(string memory) external returns (bool) sqlArgGetAsBool;
+
+    /// @notice Function that retrieves an int64 value from the requested column
+    /// @dev Gets an int64 from the specified column in the current row
+    // @return value The int64 value from the specified column
+    function(string memory) external returns (int64) sqlArgGetAsInt64;
+
+    /// @notice Function that retrieves an int256 value from the requested column
+    /// @dev Gets an int256 from the specified column in the current row
+    // @return value The int256 value from the specified column
+    function(string memory) external returns (int256) sqlArgGetAsInt256;
+
+    /// @notice Function that retrieves an address value from the requested column
+    /// @dev Gets an address from the specified column in the current row
+    // @return value The address value from the specified column
+    function(string memory) external returns (address) sqlArgGetAsAddress;
+
+    /// @notice Function that retrieves a uint64 value from the requested column
+    /// @dev Gets a uint64 from the specified column in the current row
+    // @return value The uint64 value from the specified column
+    function(string memory) external returns (uint64) sqlArgGetAsUint64;
+
+    /// @notice Function that retrieves a uint256 value from the requested column
+    /// @dev Gets a uint256 from the specified column in the current row
+    // @return value The uint256 value from the specified column
+    function(string memory) external returns (uint256) sqlArgGetAsUint256;
+
+    /// @notice Function that retrieves a string value from the requested column
+    /// @dev Gets a string from the specified column in the current row
+    // @return value The string value from the specified column
+    function(string memory) external returns (string memory) sqlArgGetAsString;
+
+    /// @notice Function that retrieves a bytes value from the requested column
+    /// @dev Gets bytes from the specified column in the current row
+    // @return value The bytes value from the specified column
+    function(string memory) external returns (bytes memory) sqlArgGetAsBytes;
+
+    /// @notice Function that retrieves a bytes32 value from the requested column
+    /// @dev Gets a bytes32 from the specified column in the current row
+    // @return value The bytes32 value from the specified column
+    function(string memory) external returns (bytes32) sqlArgGetAsBytes32;
+
+    /// @notice Function that advances to the next row in the result set
+    /// @dev Moves the cursor to the next row, returns false if no more rows
+    // @return hasMoreRows True if there are more rows to fetch
+    function() external returns (bool) sqlNextRow;
 }
 
 /// @notice Context provided to function-based triggers

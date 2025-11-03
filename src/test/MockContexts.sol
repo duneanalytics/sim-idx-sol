@@ -136,7 +136,19 @@ contract MockContexts {
             sqlArgBytes32: this.sqlArgBytes32,
             sqlArgBytes: this.sqlArgBytes,
             sqlArgString: this.sqlArgString,
-            sqlArgAddress: this.sqlArgAddress
+            sqlArgAddress: this.sqlArgAddress,
+            sqlQuery: this.sqlQuery,
+            sqlRowCount: this.sqlRowCount,
+            sqlArgGetAsBool: this.sqlArgGetAsBool,
+            sqlArgGetAsInt64: this.sqlArgGetAsInt64,
+            sqlArgGetAsInt256: this.sqlArgGetAsInt256,
+            sqlArgGetAsAddress: this.sqlArgGetAsAddress,
+            sqlArgGetAsUint64: this.sqlArgGetAsUint64,
+            sqlArgGetAsUint256: this.sqlArgGetAsUint256,
+            sqlArgGetAsString: this.sqlArgGetAsString,
+            sqlArgGetAsBytes: this.sqlArgGetAsBytes,
+            sqlArgGetAsBytes32: this.sqlArgGetAsBytes32,
+            sqlNextRow: this.sqlNextRow
         });
         return _sim;
     }
@@ -145,7 +157,7 @@ contract MockContexts {
         return address(0);
     }
 
-    function sqlStatementExecute(string memory stmt) external pure {
+    function sqlStatementExecute(string memory) external pure {
         return;
     }
 
@@ -179,6 +191,58 @@ contract MockContexts {
 
     function sqlArgAddress(address) external pure {
         return;
+    }
+
+    function sqlArgInt256(int256) external pure {
+        return;
+    }
+
+    function sqlQuery(string memory) external pure returns (bool) {
+        return false;
+    }
+
+    function sqlRowCount() external pure returns (uint64) {
+        return 0;
+    }
+
+    function sqlArgGetAsBool(string memory) external pure returns (bool) {
+        return false;
+    }
+
+    function sqlArgGetAsInt64(string memory) external pure returns (int64) {
+        return 0;
+    }
+
+    function sqlArgGetAsInt256(string memory) external pure returns (int256) {
+        return 0;
+    }
+
+    function sqlArgGetAsAddress(string memory) external pure returns (address) {
+        return address(0);
+    }
+
+    function sqlArgGetAsUint64(string memory) external pure returns (uint64) {
+        return 0;
+    }
+
+    function sqlArgGetAsUint256(string memory) external pure returns (uint256) {
+        return 0;
+    }
+
+    function sqlArgGetAsString(string memory) external pure returns (string memory) {
+        return "";
+    }
+
+    function sqlArgGetAsBytes(string memory) external pure returns (bytes memory) {
+        return "";
+    }
+
+    function sqlArgGetAsBytes32(string memory) external pure returns (bytes32) {
+        return bytes32(0);
+    }
+
+    function sqlNextRow() external pure returns (bool) {
+        return false;
     }
 
     function withTransactionIndex(uint64 _transactionIndex) external returns (MockContexts) {

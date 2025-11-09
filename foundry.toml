@@ -9,5 +9,6 @@ exclude_lints = ["unaliased-plain-import"]
 [rpc_endpoints]
 arbitrum="https://arb1.lava.build"
 ethereum="https://eth.llamarpc.com"
+gnosis="https://rpc.gnosis.gateway.fm"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

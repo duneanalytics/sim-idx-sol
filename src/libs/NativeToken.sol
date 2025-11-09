@@ -31,6 +31,7 @@ library NativeTokenLib {
         if (chainId == chainToChainId(Chains.Shape)) return NativeToken("Ether", "ETH", 18);
         if (chainId == chainToChainId(Chains.Arbitrum)) return NativeToken("Ether", "ETH", 18);
         if (chainId == chainToChainId(Chains.Optimism)) return NativeToken("Ether", "ETH", 18);
+        if (chainId == chainToChainId(Chains.Gnosis)) return NativeToken("xDAI", "xDAI", 18);
         revert("Unsupported chain");
     }
 }
